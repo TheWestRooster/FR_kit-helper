@@ -21,7 +21,6 @@ int	main()
 	if (item)
 	{
 		print_item(NULL, item);
-		free(item->name);
-		free(item);
+		delete_item(&item);
 	}
 }

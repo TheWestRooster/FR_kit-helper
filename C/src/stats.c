@@ -118,6 +118,10 @@ t_stats	strtostat(char *str)
 		return (LET);
 	if (!strcmp(str, "IGD"))
 		return (IGD);
+	if (!strcmp(str, "TNC"))
+		return (TNC);
+	if (!strcmp(str, "RSL"))
+		return (RSL);
 	if (!strcmp(str, "PNT"))
 		return (PNT);
 	if (!strcmp(str, "CDR"))
@@ -126,6 +130,8 @@ t_stats	strtostat(char *str)
 		return (VMP);
 	if (!strcmp(str, "AVP"))
 		return (AVP);
+	if (!strcmp(str, "END"))
+		return (END);
 	if (!strcmp(str, "VICTIM"))
 		return (VICTIM);
 	return (0);
@@ -151,12 +157,18 @@ char	*stattostr(t_stats stat)
 		return ("IGD");
 	if (stat == PNT)
 		return ("PNT");
+	if (stat == TNC)
+		return ("TNC");
+	if (stat == RSL)
+		return ("RSL");
 	if (stat == CDR)
 		return ("CDR");
 	if (stat == VMP)
 		return ("VMP");
 	if (stat == AVP)
 		return ("AVP");
+	if (stat == END)
+		return ("END");
 	if (stat == VICTIM)
 		return ("VICTIM");
 	return (0);

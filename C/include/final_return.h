@@ -28,9 +28,9 @@
 
 typedef struct	s_kit {
 	int		level;
-	int		base_stat[12];
-	int		stat_perlvl[12];
-	t_item	**items;
+	int		base_stat[15];
+	int		stat_perlvl[15];
+	t_item	*items;
 }	t_kit;
 
 #endif

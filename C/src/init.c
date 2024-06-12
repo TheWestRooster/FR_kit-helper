@@ -20,8 +20,9 @@ t_item	*create_item(void)
 {
 	char		*input;
 	t_item		*new_item;
-
+	
 	new_item = malloc(sizeof(t_item));
+	new_item->name = NULL;
 	new_item->effects = NULL;
 	new_item->level_ups = NULL;
 	input = readline(BYLW"Name of the item/passive: "CLR BOLD);
@@ -83,6 +84,17 @@ static t_fx_info	*init_ratios(t_fx type)
 	char		*input;
 
 	new = fx_new(type);
+	if (type == DMG || type == DOT)
+	{
+		printf(BOLD"PHYSICAL, MAGICAL or BRUT\n"CLR);
+		input = readline(BYLW"Type of Damage: "CLR BOLD);
+		if (!strcmp(input, "PHYSICAL"))
+			new->dmg_type = PHYSICAL;
+		if (!strcmp(input, "MAGICAL"))
+			new->dmg_type = MAGICAL;
+		if (!strcmp(input, "BRUT"))
+			new->dmg_type = BRUT;
+	}
 	input = readline(BYLW"Base amount: "CLR BOLD);
 	if (input)
 	{
@@ -115,15 +127,14 @@ t_item	*error_exit(t_item *item, int steps)
 	switch (steps) {
 		case 0:
 			printf(" Incorrect name\n"CLR);
-			break ;
+			break;
 		case 1:
 			printf(" Incorrect cooldown\n"CLR);
-			break ;
+			break;
 		case 2:
 			printf(" Incorrect level_lock\n"CLR);
-			break ;
+			break;
 	}
-	free(item->name);
-	free(item);
+	delete_item(&item);
 	return (NULL);
 }

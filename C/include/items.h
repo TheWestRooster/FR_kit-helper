@@ -25,9 +25,12 @@ typedef enum e_stats {
 	LET,
 	IGD,
 	PNT,
+	TNC,
+	RSL,
 	CDR,
 	VMP,
 	AVP,
+	END,
 	VICTIM
 }	t_stats;
 
@@ -76,14 +79,17 @@ typedef struct	s_item {
 	unsigned int	level_lock;
 	t_fx_info		*effects;
 	t_fx_info		*level_ups;
+	struct s_item	*next;
 }	t_item;
 
 typedef struct s_kit t_kit;
 
 t_item	*create_item(void);
 void	print_item(t_kit *kit, t_item *item);
+void	delete_item(t_item **item);
 
 t_fx_info	*fx_new(t_fx type);
 void		fx_add(t_fx_info **lst, t_fx_info *new);
+void		fx_clear(t_fx_info **lst);
 
 #endif

@@ -75,8 +75,7 @@ void	double_add(t_double_lst **lst, t_double_lst *new)
 	double_add(&(*lst)->next, new);
 }
 
-void	double_clear(t_int_lst **lst)
-{
+void double_clear(t_double_lst **lst) {
 	if (!lst || !*lst)
 		return ;
 	if ((*lst)->next)

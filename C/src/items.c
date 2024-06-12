@@ -78,3 +78,15 @@ void	print_item_info(t_fx_info *info)
 		info = info->next;
 	}
 }
+
+void	delete_item(t_item **item)
+{
+	if ((*item)->name)
+		free((*item)->name);
+	if ((*item)->effects)
+		fx_clear(&(*item)->effects);
+	if ((*item)->level_ups)
+		fx_clear(&(*item)->level_ups);
+	free((*item));
+	(*item) = NULL;
+}
