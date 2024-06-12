@@ -6,15 +6,17 @@
 /*   By: mscheman <mscheman@student.42angouleme.f>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 21:27:53 by mscheman          #+#    #+#             */
-/*   Updated: 2024/05/09 21:51:35 by mscheman         ###   ########.fr       */
+/*   Updated: 2024/05/11 23:11:05 by mscheman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef ITEMS_H
 # define ITEMS_H
 
+# include <linked_list.h>
+
 typedef enum e_stats {
-	HPS = 0,
+	HPS = 1,
 	RGN,
 	ATK,
 	DEF,
@@ -25,11 +27,12 @@ typedef enum e_stats {
 	PNT,
 	CDR,
 	VMP,
-	AVP
+	AVP,
+	VICTIM
 }	t_stats;
 
 typedef enum	e_fx {
-	HEAL,
+	HEAL = 1,
 	SHIELD,
 	DMG,
 	DOT,
@@ -49,35 +52,38 @@ typedef struct	s_fx_info {
 	t_fx				fx;
 	struct s_fx_info	*next;
 	//HEAL, DMG, DOT
-	int		base_amount;
-	t_stats	*ratios_stats;
-	double	*ratios_amount;
+	int					base_amount;
+	t_int_lst			*ratios_stats;
+	t_double_lst		*ratios_amount;
 	//DMG, DOT
-	int		dmg_type;
+	int					dmg_type;
 	//DOT
-	int		dot_ticks;
-	double	dot_delay;
+	int					dot_ticks;
+	double				dot_delay;
 	//BUFF, DEBUFF
-	t_stats	*change_stats;
-	int		*change_amount;
-	int		duration;
+	t_int_lst 			*change_stats;
+	t_double_lst 		*change_amount;
+	int					duration;
 	//REVIVE
-	int		revive_num;
+	int					revive_num;
 	//INVINCIBLE
-	int		invincible_time;
+	int					invincible_time;
 }	t_fx_info;
 
 typedef struct	s_item {
-	char		*name;
-	int 		level_lock;
-	int			cooldown;
-	int			*level_ups;
-	t_fx_info	*effects;
+	char			*name;
+	unsigned int	cooldown;
+	unsigned int	level_lock;
+	t_fx_info		*effects;
+	t_fx_info		*level_ups;
 }	t_item;
 
 typedef struct s_kit t_kit;
 
-t_item	*item_new(char *input_name, int input_lvl_lock, int input_cd, t_fx_info *input_fx);
+t_item	*create_item(void);
 void	print_item(t_kit *kit, t_item *item);
+
+t_fx_info	*fx_new(t_fx type);
+void		fx_add(t_fx_info **lst, t_fx_info *new);
 
 #endif

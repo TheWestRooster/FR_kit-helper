@@ -10,7 +10,9 @@ CC_FLAGS = -Wall -Werror -Wextra -g -I$(INC_DIR)
 FILES =	main.c \
 		init.c \
 		items.c \
-		stats.c
+		stats.c \
+		effects.c \
+		linked_list.c
 FILES_PATH = $(addprefix $(SRC_DIR), $(FILES))
 OBJS = $(FILES:.c=.o)
 OBJS_PATHS = $(patsubst %, $(OBJ_DIR)%, $(OBJS))

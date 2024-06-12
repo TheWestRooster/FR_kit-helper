@@ -1,21 +1,40 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   stats.h                                            :+:      :+:    :+:   */
+/*   effects.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mscheman <mscheman@student.42angouleme.f>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/09 22:15:25 by mscheman          #+#    #+#             */
-/*   Updated: 2024/05/11 23:11:03 by mscheman         ###   ########.fr       */
+/*   Created: 2024/05/11 14:44:48 by mscheman          #+#    #+#             */
+/*   Updated: 2024/05/11 23:10:33 by mscheman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef STATS_H
-# define STATS_H
+#include <final_return.h>
 
-void	print_ratios(t_fx_info *infos);
-t_fx	strtofx(char *str);
-t_stats	strtostat(char *str);
-char	*stattostr(t_stats stat);
+t_fx_info	*fx_new(t_fx type)
+{
+	t_fx_info	*new;
 
-#endif
+	new = malloc(sizeof(t_fx_info));
+	new->fx = type;
+	new->next = NULL;
+	return (new);
+}
+
+void	fx_add(t_fx_info **lst, t_fx_info *new)
+{
+	if ((*lst) == NULL)
+	{
+		(*lst) = new;
+		return ;
+	}
+	if (new == NULL)
+		return ;
+	if ((*lst)->next == NULL)
+	{
+		(*lst)->next = new;
+		return ;
+	}
+	fx_add(&(*lst)->next, new);
+}
