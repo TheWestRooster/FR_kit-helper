@@ -13,7 +13,7 @@
 #ifndef STATS_H
 # define STATS_H
 
-void	print_ratios(t_fx_info *infos);
+void	print_ratios(t_int_lst *stats, t_double_lst *amounts);
 t_fx	strtofx(char *str);
 t_stats	strtostat(char *str);
 char	*stattostr(t_stats stat);

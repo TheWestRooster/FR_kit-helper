@@ -60,7 +60,7 @@ void	print_item_info(t_fx_info *info)
 		if (info->fx == HEAL || info->fx == SHIELD || info->fx == DMG || info->fx == DOT)
 		{
 			printf("%d", info->base_amount);
-			print_ratios(info);
+			print_ratios(info->ratios_stats, info->ratios_amount);
 			if (info->fx == DMG || info->fx == DOT) /*Print le type de degats*/ {
 				switch (info->dmg_type) {
 					case 0:
@@ -74,6 +74,12 @@ void	print_item_info(t_fx_info *info)
 						break;
 				}
 			}
+		}
+		if (info->fx == BUFF || info->fx == DEBUFF)
+		{
+			printf("%d", info->base_amount);
+			print_ratios(info->change_stats, info->change_amount);
+			printf(BOLD" %s\n"CLR, stattostr(info->stat_buff));
 		}
 		info = info->next;
 	}

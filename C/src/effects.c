@@ -57,7 +57,7 @@ void	fx_clear(t_fx_info **lst)
 		int_clear(&to_clear->ratios_stats);
 		double_clear(&to_clear->ratios_amount);
 	}
-	if (to_clear->ratios_stats)
+	if (to_clear->change_stats)
 	{
 		int_clear(&to_clear->change_stats);
 		double_clear(&to_clear->change_amount);

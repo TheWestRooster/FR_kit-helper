@@ -12,21 +12,16 @@
 
 #include <final_return.h>
 
-void	print_ratios(t_fx_info *infos)
+void	print_ratios(t_int_lst *stats, t_double_lst *amounts)
 {
-	t_int_lst		*tmp_stat;
-	t_double_lst	*tmp_amount;
-
-	tmp_stat = infos->ratios_stats;
-	tmp_amount = infos->ratios_amount;
 	printf(BOLD);
-	while (tmp_stat && tmp_amount)
+	while (stats && amounts)
 	{
-		if (tmp_stat->i == VICTIM)
-			printf(" + %.0f%%", tmp_amount->next->db * 100);
+		if (stats->i == VICTIM)
+			printf(" + %.0f%%", amounts->next->db * 100);
 		else
-			printf(" + %.0f%%", tmp_amount->db * 100);
-		switch (tmp_stat->i)
+			printf(" + %.0f%%", amounts->db * 100);
+		switch (stats->i)
 		{
 			case HPS:
 				printf(" HPS");
@@ -65,16 +60,16 @@ void	print_ratios(t_fx_info *infos)
 				printf(" AVP");
 				break ;
 			case VICTIM:
-				printf(CYN" %s (victim)"CLR, stattostr(tmp_stat->next->i));
+				printf(CYN" %s (victim)"CLR, stattostr(stats->next->i));
 				break ;
 		}
-		if (tmp_stat->i == VICTIM)
+		if (stats->i == VICTIM)
 		{
-			tmp_stat = tmp_stat->next;
-			tmp_amount = tmp_amount->next;
+			stats = stats->next;
+			amounts = amounts->next;
 		}
-		tmp_stat = tmp_stat->next;
-		tmp_amount = tmp_amount->next;
+		stats = stats->next;
+		amounts = amounts->next;
 	}
 	printf(CLR);
 }

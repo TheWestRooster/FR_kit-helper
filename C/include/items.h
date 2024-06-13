@@ -67,6 +67,7 @@ typedef struct	s_fx_info {
 	t_int_lst 			*change_stats;
 	t_double_lst 		*change_amount;
 	int					duration;
+	t_stats				stat_buff;
 	//REVIVE
 	int					revive_num;
 	//INVINCIBLE
