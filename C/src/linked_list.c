@@ -6,7 +6,7 @@
 /*   By: mscheman <mscheman@student.42angouleme.f>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 18:35:03 by mscheman          #+#    #+#             */
-/*   Updated: 2024/05/11 23:10:28 by mscheman         ###   ########.fr       */
+/*   Updated: 2024/05/20 23:23:42 by mscheman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,8 @@ void	double_add(t_double_lst **lst, t_double_lst *new)
 	double_add(&(*lst)->next, new);
 }
 
-void double_clear(t_double_lst **lst) {
+void double_clear(t_double_lst **lst)
+{
 	if (!lst || !*lst)
 		return ;
 	if ((*lst)->next)

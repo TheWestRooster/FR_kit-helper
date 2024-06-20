@@ -22,6 +22,7 @@ typedef enum e_stats {
 	DEF,
 	PWR,
 	DSP,
+	SPD,
 	LET,
 	IGD,
 	PNT,
@@ -70,6 +71,7 @@ typedef struct	s_fx_info {
 	t_stats				stat_buff;
 	//REVIVE
 	int					revive_num;
+	double 				revive_hp;
 	//INVINCIBLE
 	int					invincible_time;
 }	t_fx_info;
@@ -85,9 +87,14 @@ typedef struct	s_item {
 
 typedef struct s_kit t_kit;
 
-t_item	*create_item(void);
-void	print_item(t_kit *kit, t_item *item);
-void	delete_item(t_item **item);
+t_item		*create_item(void);
+int			set_effects(t_item *item);
+bool		check_valid_num(char *input, bool is_double);
+void		print_item(t_item *item);
+void		print_item_info(t_fx_info *info);
+void		print_ratios(t_int_lst *stats, t_double_lst *amounts);
+void		delete_item(t_item *item);
+t_item		*error_exit(t_item *item, int steps);
 
 t_fx_info	*fx_new(t_fx type);
 void		fx_add(t_fx_info **lst, t_fx_info *new);

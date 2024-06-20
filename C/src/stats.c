@@ -6,93 +6,50 @@
 /*   By: mscheman <mscheman@student.42angouleme.f>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 22:16:14 by mscheman          #+#    #+#             */
-/*   Updated: 2024/05/11 23:10:46 by mscheman         ###   ########.fr       */
+/*   Updated: 2024/05/20 23:23:46 by mscheman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <final_return.h>
 
-void	print_ratios(t_int_lst *stats, t_double_lst *amounts)
+void	create_stats(double stats[16])
 {
-	printf(BOLD);
-	while (stats && amounts)
-	{
-		if (stats->i == VICTIM)
-			printf(" + %.0f%%", amounts->next->db * 100);
-		else
-			printf(" + %.0f%%", amounts->db * 100);
-		switch (stats->i)
+	char	*input;
+
+	printf(PRP"Creating stats...\n"CLR);
+	memset(stats, -1, sizeof(double) * 16);
+	printf(CYN"Available commands: exit, back, skip\n");
+	printf(CYN"Put -1 if you want to set stat to 0, don\'t ask why\n");
+	for (int i = 0; i < VICTIM - 1; ++i) {
+		if (i < 0) { i = 0; }
+		input = NULL;
+		while (!input || !check_valid_num(input, true))
 		{
-			case HPS:
-				printf(" HPS");
-				break ;
-			case RGN:
-				printf(" RGN");
-				break ;
-			case ATK:
-				printf(" ATK");
-				break ;
-			case DEF:
-				printf(" DEF");
-				break ;
-			case PWR:
-				printf(" PWR");
-				break ;
-			case DSP:
-				printf(" DSP");
-				break ;
-			case LET:
-				printf(" LET");
-				break ;
-			case IGD:
-				printf(" IGD");
-				break ;
-			case PNT:
-				printf(" PNT");
-				break ;
-			case CDR:
-				printf(" CDR");
-				break ;
-			case VMP:
-				printf(" VMP");
-				break ;
-			case AVP:
-				printf(" AVP");
-				break ;
-			case VICTIM:
-				printf(CYN" %s (victim)"CLR, stattostr(stats->next->i));
-				break ;
+			printf(BYLW"%s", stattostr(i + 1));
+			input = readline(": "CLR BOLD);
+			if (!input) { return; }
+			if (!strcmp(input, "exit")) { return; }
+			if (!strcmp(input, "back")) { i -= 2; goto end_of_loop; }
+			if (!strcmp(input, "skip")) { i++; goto end_of_loop; }
 		}
-		if (stats->i == VICTIM)
-		{
-			stats = stats->next;
-			amounts = amounts->next;
-		}
-		stats = stats->next;
-		amounts = amounts->next;
+		stats[i] = strtod(input, NULL);
+		free(input);
+		if (stats[i] == -1) { stats[i] = 0; }
+		end_of_loop:;
 	}
-	printf(CLR);
+	printf(PRP"Stats have been created\n"CLR);
 }
 
-t_fx	strtofx(char *str)
+void	print_stats(double stats[16])
 {
-	if (!strcmp(str, "HEAL"))
-		return (HEAL);
-	if (!strcmp(str, "SHIELD"))
-		return (SHIELD);
-	if (!strcmp(str, "DMG"))
-		return (DMG);
-	if (!strcmp(str, "DOT"))
-		return (DOT);
-	if (!strcmp(str, "BUFF"))
-		return (BUFF);
-	if (!strcmp(str, "DEBUFF"))
-		return (DEBUFF);
-	if (!strcmp(str, "REVIVE"))
-		return (REVIVE);
-	if (!strcmp(str, "INVINCIBLE"))
-		return (INVINCIBLE);
-	return (0);
+	for (int i = 0; i < VICTIM - 1 && stats[i] > -1; ++i) {
+		printf("%s", stattostr(i + 1));
+		if (stats[i] < 1 && stats[i] != 0.0f)
+			printf(" %.0f%%", stats[i] * 100);
+		else
+			printf(" %.0f", stats[i]);
+		printf("\n");
+	}
 }
 
 t_stats	strtostat(char *str)
@@ -109,6 +66,8 @@ t_stats	strtostat(char *str)
 		return (PWR);
 	if (!strcmp(str, "DSP"))
 		return (DSP);
+	if (!strcmp(str, "SPD"))
+		return (SPD);
 	if (!strcmp(str, "LET"))
 		return (LET);
 	if (!strcmp(str, "IGD"))
@@ -146,6 +105,8 @@ char	*stattostr(t_stats stat)
 		return ("PWR");
 	if (stat == DSP)
 		return ("DSP");
+	if (stat == SPD)
+		return ("SPD");
 	if (stat == LET)
 		return ("LET");
 	if (stat == IGD)

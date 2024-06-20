@@ -6,7 +6,7 @@
 /*   By: mscheman <mscheman@student.42angouleme.f>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 20:49:36 by mscheman          #+#    #+#             */
-/*   Updated: 2024/05/11 23:10:43 by mscheman         ###   ########.fr       */
+/*   Updated: 2024/05/20 23:23:44 by mscheman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,11 @@
 
 int	main()
 {
-	t_item	*item;
-
+	t_kit	*kit;
 	printf(BGRN"Welcome to"BCYN" Final Return Kit-helper\n"CLR);
-	item = create_item();
-	if (item)
-	{
-		print_item(NULL, item);
-		delete_item(&item);
-	}
+
+	kit = create_kit();
+	print_kit(kit);
+	unload_kit(kit);
 }
+

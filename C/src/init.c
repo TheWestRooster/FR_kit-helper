@@ -6,46 +6,18 @@
 /*   By: mscheman <mscheman@student.42angouleme.f>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 21:51:49 by mscheman          #+#    #+#             */
-/*   Updated: 2024/05/11 23:10:37 by mscheman         ###   ########.fr       */
+/*   Updated: 2024/05/20 23:23:35 by mscheman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <final_return.h>
 
-static int			set_effects(t_item *item);
 static t_fx_info	*init_ratios(t_fx type);
 static t_fx_info	*init_buff(t_fx type);
-static t_item		*error_exit(t_item *item, int steps);
+static t_fx_info	*init_revive(void);
+static t_fx_info	*init_invinc(void);
 
-t_item	*create_item(void)
-{
-	char		*input;
-	t_item		*new_item;
-	
-	new_item = malloc(sizeof(t_item));
-	new_item->name = NULL;
-	new_item->effects = NULL;
-	new_item->level_ups = NULL;
-	input = readline(BYLW"Name of the item/passive: "CLR BOLD);
-	if (!input)
-		return (error_exit(new_item, 0));
-	new_item->name = strdup(input);
-	free(input);
-	input = readline(BYLW"Cooldown of the item/passive: "CLR BOLD);
-	if (!input)
-		return (error_exit(new_item, 1));
-	new_item->cooldown = (int)strtol(input, NULL, 10);
-	free(input);
-	input = readline(BYLW"Level lock of the item/passive: "CLR BOLD);
-	if (!input)
-		return (error_exit(new_item, 2));
-	new_item->level_lock = (int)strtol(input, NULL, 10);
-	free(input);
-	set_effects(new_item);
-	return (new_item);
-}
-
-static int	set_effects(t_item *item)
+int	set_effects(t_item *item)
 {
 	char	*input;
 
@@ -76,12 +48,24 @@ static int	set_effects(t_item *item)
 				fx_add(&item->effects, init_buff(DEBUFF));
 				break;
 			case REVIVE:
+				fx_add(&item->effects, init_revive());
 				break;
 			case INVINCIBLE:
+				fx_add(&item->effects, init_invinc());
 				break;
 		}
 		free(input);
 	}
+}
+
+bool	check_valid_num(char *input, bool is_double)
+{
+	if (is_double && strtod(input, NULL))
+		return (true);
+	if (!is_double && strtol(input, NULL, 10))
+		return (true);
+	free(input);
+	return (false);
 }
 
 static t_fx_info	*init_ratios(t_fx type)
@@ -110,7 +94,7 @@ static t_fx_info	*init_ratios(t_fx type)
 	while (true)
 	{
 		stat_name:
-		printf(CYN"Valid inputs are HPS, RGN, ATK, DEF, PWR, DSP, LET, IGD, PNT, CDR, VMP, AVP, VICTIM\n"CLR);
+		printf(CYN"Valid inputs are HPS, RGN, ATK, DEF, PWR, DSP, SPD, LET, IGD, PNT, TNC, RSL, CDR, VMP, AVP, END, VICTIM\n");
 		printf(CYN"If your input is \"VICTIM\", put the amount to 0 and make sure to add an other one after.\n");
 		input = readline(BYLW"Stats to base the ratio off: "CLR BOLD);
 		if (!input)
@@ -134,7 +118,8 @@ static t_fx_info	*init_buff(t_fx type)
 
 	new = fx_new(type);
 	stat_type:
-	input = readline(BYLW"What stat is impacted: "CLR BOLD);
+	printf(CYN"Valid inputs are HPS, RGN, ATK, DEF, PWR, DSP, SPD, LET, IGD, PNT, TNC, RSL, CDR, VMP, AVP, END\n");
+	input = readline(BYLW"Impacted stat: "CLR BOLD);
 	if (!input || !strtostat(input))
 		goto stat_type;
 	new->stat_buff = strtostat(input);
@@ -154,11 +139,11 @@ static t_fx_info	*init_buff(t_fx type)
 	while (true)
 	{
 		stat_name:
-		printf(CYN"Valid inputs are HPS, RGN, ATK, DEF, PWR, DSP, LET, IGD, PNT, CDR, VMP, AVP\n");
+		printf(CYN"Valid inputs are HPS, RGN, ATK, DEF, PWR, DSP, SPD, LET, IGD, PNT, TNC, RSL, CDR, VMP, AVP, END\n");
 		input = readline(BYLW"Stats to base the ratio off: "CLR BOLD);
 		if (!input)
 			break ;
-		if (!strtostat(input))
+		if (!strtostat(input) || strtostat(input) == VICTIM)
 			goto stat_name;
 		int_add(&new->change_stats, int_new(strtostat(input)));
 		free(input);
@@ -175,6 +160,41 @@ static t_fx_info	*init_buff(t_fx type)
 	return (new);
 }
 
+static t_fx_info	*init_revive(void)
+{
+	t_fx_info	*new;
+	char		*input;
+
+	new = fx_new(REVIVE);
+	input = NULL;
+	while (!input || !check_valid_num(input, false))
+		input = readline(BYLW"Number of revives: "CLR BOLD);
+	new->revive_num = (int)strtol(input, NULL, 10);
+	free(input);
+	input = NULL;
+	printf(CYN"Put a number between 0 and 1 for relative healing, like 10%% max hp.\n");
+	printf(CYN"Any number greater than 1 will be absolute healing\n");
+	while (!input || !check_valid_num(input, true))
+		input = readline(BYLW"Heal of the revive: "CLR BOLD);
+	new->revive_hp = strtod(input, NULL);
+	free(input);
+	return (new);
+}
+
+static t_fx_info	*init_invinc(void)
+{
+	t_fx_info	*new;
+	char		*input;
+
+	new = fx_new(INVINCIBLE);
+	input = NULL;
+	while (!input || !check_valid_num(input, false))
+		input = readline(BYLW"Seconds of invincibility: "CLR BOLD);
+	new->invincible_time = (int)strtol(input, NULL, 10);
+	free(input);
+	return (new);
+}
+
 t_item	*error_exit(t_item *item, int steps)
 {
 	printf(BRED"Unexpected exit: ");
@@ -188,7 +208,12 @@ t_item	*error_exit(t_item *item, int steps)
 		case 2:
 			printf(" Incorrect level_lock\n"CLR);
 			break;
+		case 3:
+			printf(" No effects on the item. Deleting item...\n"CLR);
+			break;
+		default:
+			break;
 	}
-	delete_item(&item);
+	delete_item(item);
 	return (NULL);
 }

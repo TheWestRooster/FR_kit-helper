@@ -12,7 +12,9 @@ FILES =	main.c \
 		items.c \
 		stats.c \
 		effects.c \
-		linked_list.c
+		linked_list.c \
+		kits.c
+
 FILES_PATH = $(addprefix $(SRC_DIR), $(FILES))
 OBJS = $(FILES:.c=.o)
 OBJS_PATHS = $(patsubst %, $(OBJ_DIR)%, $(OBJS))
@@ -28,7 +30,7 @@ clean:
 	@rm -rf $(OBJ_DIR)
 
 fclean: clean
-	@rm -f $(CLIENT_NAME)
+	@rm -f $(NAME)
 
 all: $(NAME)
 

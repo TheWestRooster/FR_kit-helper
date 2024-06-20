@@ -27,10 +27,14 @@
 # include <linked_list.h>
 
 typedef struct	s_kit {
-	int		level;
-	int		base_stat[15];
-	int		stat_perlvl[15];
+	char	*name;
+	double	base_stat[16];
+	double	stat_perlvl[16];
 	t_item	*items;
 }	t_kit;
+
+t_kit	*create_kit(void);
+void	print_kit(t_kit *kit);
+void	unload_kit(t_kit *kit);
 
 #endif
