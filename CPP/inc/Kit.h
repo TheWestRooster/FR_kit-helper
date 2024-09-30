@@ -3,10 +3,10 @@
 
 # include <iostream>
 # include <string>
-# include "Stats.h"
 
 class Kit;
 
+# include "Stats.h"
 # include "Damage.h"
 # include "colors.h"
 
@@ -44,8 +44,8 @@ public:
 	void changePV(float amount);
 
 private:
-	const std::string &_name;
-	const Stats &_stats;
+	const std::string _name;
+	const Stats _stats;
 	float _currPV;
 	float _shield;
 	bool _isDead;

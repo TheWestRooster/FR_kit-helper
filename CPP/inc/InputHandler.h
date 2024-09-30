@@ -6,16 +6,30 @@
 #define INPUTHANDLER_H
 
 #include <iostream>
+#include <fstream>
 #include <string>
-#include "colors.h"
-#include <typeinfo>
 #include <cstdlib>
-#include <cerrno>
+#include "Kit.h"
+#include "colors.h"
 
 class InputHandler {
 	public:
-		template <typename T>
-		T	userInput(const std::string &prompt);
+		// Methods
+		static Kit loadKit(const std::string &kit);
+
+		// Exceptions
+		class KitFileNotFound : public std::exception {
+			public:
+				const char *what() throw() {
+					return BRED "Kit File not found." CLR ;
+				}
+		};
+		class KitFileIncomplete : public std::exception {
+			public:
+				const char *what() throw() {
+					return BRED "Kit File is incomplete." CLR ;
+				}
+		};
 };
 
 
