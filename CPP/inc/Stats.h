@@ -11,55 +11,100 @@
 #include <cmath>
 #include "colors.h"
 
+typedef enum e_stats {
+	PVS = 0,
+	MPV,
+	CPV,
+	RGN,
+	ATK,
+	PWR,
+	DEF,
+	RES,
+	SPD,
+	LET,
+	IGD,
+	PEN,
+	TNC,
+	RSL,
+	VMP,
+	AVP,
+	CDR,
+	CRC,
+	CRM,
+	VICTIM_PVS,
+	VICTIM_MPV,
+	VICTIM_CPV,
+	VICTIM_RGN,
+	VICTIM_ATK,
+	VICTIM_PWR,
+	VICTIM_DEF,
+	VICTIM_RES,
+	VICTIM_SPD,
+	VICTIM_LET,
+	VICTIM_IGD,
+	VICTIM_PEN,
+	VICTIM_TNC,
+	VICTIM_RSL,
+	VICTIM_VMP,
+	VICTIM_AVP,
+	VICTIM_CDR,
+	VICTIM_CRC,
+	VICTIM_CRM,
+	ESTATS_END
+} t_stats;
+
 class Stats {
 private:
-	unsigned int _pvs;
-	unsigned int _rgn;
-	unsigned int _atk;
-	unsigned int _pwr;
-	unsigned int _def;
-	unsigned int _res;
-	unsigned int _spd;
-	unsigned int _let;
-	float		 _igd;
-	unsigned int _pen;
-	float		 _tnc;
-	float		 _rsl;
-	float		 _vmp;
-	float		 _avp;
-	unsigned int _cdr;
-	unsigned int _crc;
-	float		 _crm;
+	float _pvs;
+	float _rgn;
+	float _atk;
+	float _pwr;
+	float _def;
+	float _res;
+	float _spd;
+	float _let;
+	float _igd;
+	float _pen;
+	float _tnc;
+	float _rsl;
+	float _vmp;
+	float _avp;
+	float _cdr;
+	float _crc;
+	float _crm;
 public:
 	Stats();
-	Stats(unsigned int pvs, unsigned int rgn, unsigned int atk, unsigned int pwr, unsigned int def, unsigned int res,
-		  unsigned int spd, unsigned int let, float igd, unsigned int pen, float tnc, float rsl, float vmp, float avp,
-		  unsigned int cdr, unsigned int crc, float crm);
+	Stats(float pvs, float rgn, float atk, float pwr, float def, float res,
+		  float spd, float let, float igd, float pen, float tnc, float rsl, float vmp, float avp,
+		  float cdr, float crc, float crm);
 	Stats(const Stats &s);
 	Stats operator=(const Stats &s);
 
 	friend std::ostream &operator<<(std::ostream &os, const Stats &stats);
-	
-	unsigned int getPvs() const;
-	void setPvs(unsigned int pvs);
-	unsigned int getRgn() const;
-	void setRgn(unsigned int rgn);
-	unsigned int getAtk() const;
-	void setAtk(unsigned int atk);
-	unsigned int getPwr() const;
-	void setPwr(unsigned int pwr);
-	unsigned int getDef() const;
-	void setDef(unsigned int def);
-	unsigned int getRes() const;
-	void setRes(unsigned int res);
-	unsigned int getSpd() const;
-	void setSpd(unsigned int spd);
-	unsigned int getLet() const;
-	void setLet(unsigned int let);
+	Stats operator+(const Stats &rhs);
+
+	static const std::string statToStr(t_stats stat);
+
+	float getPvs() const;
+	void setPvs(float pvs);
+	float getRgn() const;
+	void setRgn(float rgn);
+	float getAtk() const;
+	void setAtk(float atk);
+	float getPwr() const;
+	void setPwr(float pwr);
+	float getDef() const;
+	void setDef(float def);
+	float getRes() const;
+	void setRes(float res);
+	float getSpd() const;
+	void setSpd(float spd);
+	float getLet() const;
+	void setLet(float let);
 	float getIgd() const;
 	void setIgd(float igd);
-	unsigned int getPen() const;
-	void setPen(unsigned int pen);
+	float getPen() const;
+	void setPen(float pen);
 	float getTnc() const;
 	void setTnc(float tnc);
 	float getRsl() const;
@@ -68,10 +113,10 @@ public:
 	void setVmp(float vmp);
 	float getAvp() const;
 	void setAvp(float avp);
-	unsigned int getCdr() const;
-	void setCdr(unsigned int cdr);
-	unsigned int getCrc() const;
-	void setCrc(unsigned int crc);
+	float getCdr() const;
+	void setCdr(float cdr);
+	float getCrc() const;
+	void setCrc(float crc);
 	float getCrm() const;
 	void setCrm(float crm);
 };

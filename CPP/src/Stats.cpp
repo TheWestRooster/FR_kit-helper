@@ -24,9 +24,9 @@ Stats::Stats() {
 	this->_crm = 0.5;
 }
 
-Stats::Stats(unsigned int pvs, unsigned int rgn, unsigned int atk, unsigned int pwr, unsigned int def, unsigned int res,
-			 unsigned int spd, unsigned int let, float igd, unsigned int pen, float tnc, float rsl, float vmp, float avp,
-			 unsigned int cdr, unsigned int crc, float crm) {
+Stats::Stats(float pvs, float rgn, float atk, float pwr, float def, float res,
+			 float spd, float let, float igd, float pen, float tnc, float rsl, float vmp, float avp,
+			 float cdr, float crc, float crm) {
 	this->_pvs = pvs;
 	this->_rgn = rgn;
 	this->_atk = atk;
@@ -67,7 +67,24 @@ Stats::Stats(const Stats &s) {
 }
 
 Stats Stats::operator=(const Stats &s) {
-	return Stats(s);
+	this->_pvs = s._pvs;
+	this->_rgn = s._rgn;
+	this->_atk = s._atk;
+	this->_pwr = s._pwr;
+	this->_def = s._def;
+	this->_res = s._res;
+	this->_spd = s._spd;
+	this->_let = s._let;
+	this->_igd = s._igd;
+	this->_pen = s._pen;
+	this->_tnc = s._tnc;
+	this->_rsl = s._rsl;
+	this->_vmp = s._vmp;
+	this->_avp = s._avp;
+	this->_cdr = s._cdr;
+	this->_crc = s._crc;
+	this->_crm = s._crm;
+	return (*this);
 }
 
 std::ostream &operator<<(std::ostream &os, const Stats &stats) {
@@ -91,67 +108,176 @@ std::ostream &operator<<(std::ostream &os, const Stats &stats) {
 	return os;
 }
 
-unsigned int Stats::getPvs() const {
+Stats Stats::operator+(const Stats &rhs)
+{
+	Stats sum;
+	sum._pvs = this->_pvs + rhs._pvs;
+	sum._rgn = this->_rgn + rhs._rgn;
+	sum._atk = this->_atk + rhs._atk;
+	sum._pwr = this->_pwr + rhs._pwr;
+	sum._def = this->_def + rhs._def;
+	sum._res = this->_res + rhs._res;
+	sum._spd = this->_spd + rhs._spd;
+	sum._let = this->_let + rhs._let;
+	sum._igd = this->_igd + rhs._igd;
+	sum._pen = this->_pen + rhs._pen;
+	sum._tnc = this->_tnc + rhs._tnc;
+	sum._rsl = this->_rsl + rhs._rsl;
+	sum._vmp = this->_vmp + rhs._vmp;
+	sum._avp = this->_avp + rhs._avp;
+	sum._cdr = this->_cdr + rhs._cdr;
+	sum._crc = this->_crc + rhs._crc;
+	sum._crm = this->_crm + rhs._crm;
+	return sum;
+}
+
+const std::string Stats::statToStr(t_stats stat)
+{
+	switch (stat)
+	{
+	case PVS:
+		return "PVS"; 
+	case MPV:
+		return "MISSING_PVS"; 
+	case CPV:
+		return "CURRENT_PVS"; 
+	case RGN:
+		return "RGN"; 
+	case ATK:
+		return "ATK"; 
+	case PWR:
+		return "PWR"; 
+	case DEF:
+		return "DEF"; 
+	case RES:
+		return "RES"; 
+	case SPD:
+		return "SPD"; 
+	case LET:
+		return "LET"; 
+	case IGD:
+		return "IGD"; 
+	case PEN:
+		return "PEN"; 
+	case TNC:
+		return "TNC"; 
+	case RSL:
+		return "RSL"; 
+	case VMP:
+		return "VMP"; 
+	case AVP:
+		return "AVP"; 
+	case CDR:
+		return "CDR"; 
+	case CRC:
+		return "CRIT_CHANCE";
+	case CRM:
+		return "CRIT_DAMAGE"; 
+	case VICTIM_PVS:
+		return "VICTIM_PVS"; 
+	case VICTIM_MPV:
+		return "VICTIM_MISSING_PVS"; 
+	case VICTIM_CPV:
+		return "VICTIM_CURRENT_PVS"; 
+	case VICTIM_RGN:
+		return "VICTIM_RGN"; 
+	case VICTIM_ATK:
+		return "VICTIM_ATK"; 
+	case VICTIM_PWR:
+		return "VICTIM_PWR"; 
+	case VICTIM_DEF:
+		return "VICTIM_DEF"; 
+	case VICTIM_RES:
+		return "VICTIM_RES"; 
+	case VICTIM_SPD:
+		return "VICTIM_SPD"; 
+	case VICTIM_LET:
+		return "VICTIM_LET"; 
+	case VICTIM_IGD:
+		return "VICTIM_IGD"; 
+	case VICTIM_PEN:
+		return "VICTIM_PEN"; 
+	case VICTIM_TNC:
+		return "VICTIM_TNC"; 
+	case VICTIM_RSL:
+		return "VICTIM_RSL"; 
+	case VICTIM_VMP:
+		return "VICTIM_VMP"; 
+	case VICTIM_AVP:
+		return "VICTIM_AVP"; 
+	case VICTIM_CDR:
+		return "VICTIM_CDR"; 
+	case VICTIM_CRC:
+		return "VICTIM_CRIT_CHANCE"; 
+	case VICTIM_CRM:
+		return "VICTIM_CRIT_DAMAGE"; 
+	default:
+		return "";
+	}
+}
+
+float Stats::getPvs() const
+{
 	return _pvs;
 }
 
-void Stats::setPvs(unsigned int pvs) {
+void Stats::setPvs(float pvs) {
 	_pvs = pvs;
 }
 
-unsigned int Stats::getRgn() const {
+float Stats::getRgn() const {
 	return _rgn;
 }
 
-void Stats::setRgn(unsigned int rgn) {
+void Stats::setRgn(float rgn) {
 	_rgn = rgn;
 }
 
-unsigned int Stats::getAtk() const {
+float Stats::getAtk() const {
 	return _atk;
 }
 
-void Stats::setAtk(unsigned int atk) {
+void Stats::setAtk(float atk) {
 	_atk = atk;
 }
 
-unsigned int Stats::getPwr() const {
+float Stats::getPwr() const {
 	return _pwr;
 }
 
-void Stats::setPwr(unsigned int pwr) {
+void Stats::setPwr(float pwr) {
 	_pwr = pwr;
 }
 
-unsigned int Stats::getDef() const {
+float Stats::getDef() const {
 	return _def;
 }
 
-void Stats::setDef(unsigned int def) {
+void Stats::setDef(float def) {
 	_def = def;
 }
 
-unsigned int Stats::getRes() const {
+float Stats::getRes() const {
 	return _res;
 }
 
-void Stats::setRes(unsigned int res) {
+void Stats::setRes(float res) {
 	_res = res;
 }
 
-unsigned int Stats::getSpd() const {
+float Stats::getSpd() const {
 	return _spd;
 }
 
-void Stats::setSpd(unsigned int spd) {
+void Stats::setSpd(float spd) {
 	_spd = spd;
 }
 
-unsigned int Stats::getLet() const {
+float Stats::getLet() const {
 	return _let;
 }
 
-void Stats::setLet(unsigned int let) {
+void Stats::setLet(float let) {
 	_let = let;
 }
 
@@ -163,11 +289,11 @@ void Stats::setIgd(float igd) {
 	_igd = igd;
 }
 
-unsigned int Stats::getPen() const {
+float Stats::getPen() const {
 	return _pen;
 }
 
-void Stats::setPen(unsigned int pen) {
+void Stats::setPen(float pen) {
 	_pen = pen;
 }
 
@@ -203,19 +329,19 @@ void Stats::setAvp(float avp) {
 	_avp = avp;
 }
 
-unsigned int Stats::getCdr() const {
+float Stats::getCdr() const {
 	return _cdr;
 }
 
-void Stats::setCdr(unsigned int cdr) {
+void Stats::setCdr(float cdr) {
 	_cdr = cdr;
 }
 
-unsigned int Stats::getCrc() const {
+float Stats::getCrc() const {
 	return _crc;
 }
 
-void Stats::setCrc(unsigned int crc) {
+void Stats::setCrc(float crc) {
 	_crc = crc;
 }
 

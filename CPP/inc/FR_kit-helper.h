@@ -6,6 +6,6 @@
 #define CPP_FR_KIT_HELPER_H
 
 #include "InputHandler.h"
-#include "Stats.h"
+#include "Kit.h"
 
 #endif //CPP_FR_KIT_HELPER_H

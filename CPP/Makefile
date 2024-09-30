@@ -2,13 +2,15 @@ NAME = FR_kit-helper
 
 INCLUDES = inc/
 
-CPP_FLAGS = -I$(INCLUDES) -Wall -Werror -Wextra -std=c++98
+CPP_FLAGS = -I$(INCLUDES) -Wall -Werror -Wextra -g
 CC = c++
 
 SRC_DIR = src/
 SRC_NAME =	main.cpp \
 			InputHandler.cpp \
-			Stats.cpp
+			Stats.cpp \
+			Damage.cpp \
+			Kit.cpp
 
 OBJ_DIR = obj/
 OBJ_NAME = $(SRC_NAME:.cpp=.o)

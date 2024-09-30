@@ -4,7 +4,8 @@
 
 #include "InputHandler.h"
 
-InputHandler::InputHandler() {}
+template <typename T>
+static T convert(std::string &input);
 
 template <typename T>
 T InputHandler::userInput(const std::string &prompt) {
@@ -15,27 +16,33 @@ T InputHandler::userInput(const std::string &prompt) {
 	while (true) {
 		std::cout << prompt << "> ";
 		std::getline(std::cin, input);
-		if (typeid(ret).name() == typeid(std::string).name())
+		try
 		{
-			ret = input;
-			break;
+			ret = convert<T>(input);
 		}
-		else if (typeid(ret).name() == typeid(unsigned int).name())
+		catch(const std::exception& e)
 		{
-			errno = 0;
-			ret = std::strtol(input.c_str(), __nullptr, 10);
-			if (!errno)
-				break ;
+			std::cerr << BRED << e.what() << CLR << std::endl;
+			std::exit(EXIT_FAILURE);
 		}
-		else if (typeid(ret).name() == typeid(float).name())
-		{
-			errno = 0;
-			ret = std::strtof(input.c_str(), __nullptr);
-			if (!errno)
-				break ;
-		}
-		else
-			return 0;
 	}
 	return ret;
+}
+
+template <typename T>
+static T convert(std::string &input) {
+	if (typeid(T).name() == typeid(std::string).name())
+	{
+		return input;
+	}
+	else if (typeid(T).name() == typeid(unsigned int).name())
+	{
+		return std::atoi(input.c_str());
+	}
+	else if (typeid(T).name() == typeid(float).name())
+	{
+		return std::atof(input.c_str());
+	}
+	else
+		return 0;
 }

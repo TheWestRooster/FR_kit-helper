@@ -21,4 +21,6 @@
 # define BCYN "\033[1;96m"
 # define BWHT "\033[1;97m"
 
-#endif
+# define RGB(r, g, b) "\033[38;2;" #r ";" #g ";" #b "m"
+
+#endif //COLORS

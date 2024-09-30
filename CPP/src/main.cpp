@@ -4,12 +4,20 @@
 
 #include "FR_kit-helper.h"
 
-int	main()
+int	main(int argc, char *argv[])
 {
-	InputHandler	inputHandler;
-
-	std::cout << BOLD "Welcome to " BCYN "FR_kit-helper" CLR BOLD " by LeCoqBeau" CLR << std::endl;
-
-	std::cout << inputHandler.userInput<float>(" ") << std::endl;
+	argc = 2;
+	if (argc == 1 || argc > 3)
+	{
+		std::cout << BRED "Invalid number of parameters" CLR << std::endl;
+		return 0;
+	}
+	(void)argv;
+	Kit Attacker;
+	Kit Victim("Victim", Kit::templateStats);
+	Damage aDMG("Epee", Attacker);
+	aDMG.addRatio(ATK, 1.30f);
+	aDMG.addRatio(VICTIM_MPV, 0.15f);
+	Victim = 150;
+	aDMG.calculateDamage(Victim, true);
 }
-
