@@ -1,9 +1,10 @@
 #include "Kit.h"
 
 // Canonical Orthodox Form
-const Kit &Kit::templateKit = Kit();
-const std::string &Kit::templateName = KIT_DEFAULT_NAME;
-const Stats &Kit::templateStats = Stats();
+const std::string Kit::templateName = KIT_DEFAULT_NAME;
+const Stats Kit::templateStats = Stats();
+const Stats Kit::nullStats = Stats({0});
+const Kit Kit::templateKit = Kit();
 
 Kit::Kit() : _name(Kit::templateName), _stats(Kit::templateStats) {
 	_currPV = getStats().getValue(PVS);
@@ -36,6 +37,14 @@ Kit::~Kit() {
 }
 
 // Accessors
+const std::string &Kit::getName() const {
+	return _name;
+}
+
+void Kit::setName(const std::string &name) {
+	const_cast<std::string &>(_name) = name;
+}
+
 const Stats& Kit::getStats() const {
 	return this->_stats;
 }
@@ -103,6 +112,16 @@ Kit &Kit::operator-=(float rhs)
 	return (*this);
 }
 
+Kit &Kit::operator+=(const Stats &rhs) {
+	const_cast<Stats &>(_stats) += rhs;
+	return (*this);
+}
+
+Kit &Kit::operator-=(const Stats &rhs) {
+	const_cast<Stats &>(_stats) -= rhs;
+	return (*this);
+}
+
 bool Kit::operator==(const Kit &rhs) const {
 	if (_name != rhs._name)
 		return false;
@@ -110,7 +129,7 @@ bool Kit::operator==(const Kit &rhs) const {
 		return false;
 	if (_attacks != rhs._attacks)
 		return false;
-	return false;
+	return true;
 }
 
 bool Kit::operator!=(const Kit &rhs) const {

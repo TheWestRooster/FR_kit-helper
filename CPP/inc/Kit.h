@@ -17,9 +17,10 @@ class Kit
 {
 public:
 	// Static
-	static const Kit &templateKit;
-	static const std::string &templateName;
-	static const Stats &templateStats;
+	static const Kit templateKit;
+	static const std::string templateName;
+	static const Stats templateStats;
+	static const Stats nullStats;
 
 	// Orthodox Canonical Form
 	Kit();
@@ -29,6 +30,8 @@ public:
 	~Kit();
 
 	// Accessors
+	const std::string &getName() const;
+	void setName(const std::string &name);
 	const Stats &getStats() const;
 	void setStats(const Stats &stats);
 	const float &getCurrPV() const;
@@ -42,6 +45,8 @@ public:
 	Kit &operator=(float rhs);
 	Kit &operator+=(float rhs);
 	Kit &operator-=(float rhs);
+	Kit &operator+=(const Stats &rhs);
+	Kit &operator-=(const Stats &rhs);
 	bool operator==(const Kit &rhs) const;
 	bool operator!=(const Kit &rhs) const;
 

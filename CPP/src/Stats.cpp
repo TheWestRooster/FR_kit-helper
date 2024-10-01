@@ -27,7 +27,12 @@ Stats::Stats() {
 Stats::Stats(float stats[CRM + 1])
 {
 	for (int i = 0; i < CRM + 1; i++)
-		_stats[i] = stats[i];
+	{
+		if (!stats)
+			_stats[i] = 0;
+		else
+			_stats[i] = stats[i];
+	}
 }
 
 Stats::Stats(const Stats &s) {

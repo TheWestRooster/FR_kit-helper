@@ -59,6 +59,7 @@ private:
 public:
 	// Canonical Orthodox Form
 	Stats();
+	Stats(void *);
 	Stats(float stats[CRM + 1]);
 	Stats(const Stats &s);
 	Stats &operator=(const Stats &s);
