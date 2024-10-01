@@ -6,7 +6,7 @@ Damage::Damage(const std::string &name, const Kit &kit, const t_type &type)
 {}
 
 Damage::Damage(const Damage &src)
-: _name(src._name), _linkedKit(src._linkedKit), _type(src._type)
+	: _name(src._name), _linkedKit(src._linkedKit), _type(src._type)
 {}
 
 Damage &Damage::operator=(const Damage &rhs) {
@@ -18,10 +18,43 @@ Damage &Damage::operator=(const Damage &rhs) {
 
 Damage::~Damage() {}
 
+// Accessors
+const std::string &Damage::getName() const {
+	return _name;
+}
+
+void Damage::setName(const std::string &name) {
+	const_cast<std::string &>(_name) = name;
+}
+
+t_type Damage::getType() const {
+	return _type;
+}
+
+void Damage::setType(t_type type) {
+	const_cast<t_type &>(_type) = type;
+}
+
+const Kit &Damage::getLinkedKit() const {
+	return _linkedKit;
+}
+
+void Damage::setLinkedKit(const Kit &linkedKit) {
+	const_cast<Kit &>(_linkedKit) = linkedKit;
+}
+
 // Methods
 void Damage::addRatio(t_stats stat, float ratio) {
 	this->_stats.push_back(stat);
 	this->_ratios.push_back(ratio);
+}
+
+void Damage::popRatio()
+{
+	if (_ratios.empty())
+		return
+	_stats.pop_back();
+	_ratios.pop_back();
 }
 
 float Damage::calculateDamage(const Kit &victim, bool details)
@@ -94,6 +127,23 @@ float Damage::calculateReduction(const Kit &victim) {
 	victimStat = Damage::statToReduction(victimStat);
 	return victimStat;
 }
+
+bool Damage::operator==(const Damage &rhs) const {
+	if (_name != rhs._name)
+		return false;
+	if (_linkedKit != rhs._linkedKit)
+		return (false);
+	if (_type != rhs._type)
+		return false;
+	if (_stats != rhs._stats)
+		return (false);
+	if (_ratios != rhs._ratios)
+		return (false);
+	return true;
+}
+
+// Overloads
+
 
 // Static
 float Damage::statToReduction(float stat)

@@ -7,6 +7,7 @@ CC = c++
 
 SRC_DIR = src/
 SRC_NAME =	main.cpp \
+			FR_kit-helper.cpp \
 			InputHandler.cpp \
 			Stats.cpp \
 			Damage.cpp \

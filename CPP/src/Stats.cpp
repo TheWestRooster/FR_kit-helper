@@ -69,6 +69,26 @@ Stats &Stats::operator+=(const Stats &rhs)
 	return (*this);
 }
 
+Stats &Stats::operator-=(const Stats &rhs)
+{
+	for (int i = 0; i < CRM + 1; i++)
+		_stats[i] -= rhs._stats[i];
+	return (*this);
+}
+
+bool Stats::operator==(const Stats &rhs) const {
+	for (int i = 0; i < CRM + 1; i++)
+	{
+		if (_stats[i] != rhs._stats[i])
+			return false;
+	}
+	return true;
+}
+
+bool Stats::operator!=(const Stats &rhs) const {
+	return !(*this == rhs);
+}
+
 const std::string Stats::statToStr(t_stats stat)
 {
 	switch (stat)

@@ -24,10 +24,22 @@ public:
 	Damage &operator=(const Damage &rhs);
 	~Damage();
 
+	// Accessors
+	const std::string &getName() const;
+	void setName(const std::string &name);
+	t_type getType() const;
+	void setType(t_type type);
+	const Kit &getLinkedKit() const;
+	void setLinkedKit(const Kit &linkedKit);
+
 	// Methods
 	void addRatio(t_stats stat, float ratio);
+	void popRatio();
 	float calculateDamage(const Kit &victim, bool details=false);
 	float calculateReduction(const Kit &victim);
+
+	// Overloads
+	bool operator==(const Damage &rhs) const;
 
 	// Static
 	static float statToReduction(float stat);

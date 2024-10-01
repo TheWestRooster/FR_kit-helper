@@ -66,6 +66,9 @@ public:
 	// Overloads
 	friend std::ostream &operator<<(std::ostream &os, const Stats &stats);
 	Stats &operator+=(const Stats &rhs);
+	Stats &operator-=(const Stats &rhs);
+	bool operator==(const Stats &rhs) const;
+	bool operator!=(const Stats &rhs) const;
 
 	// Static
 	static const std::string statToStr(t_stats stat);

@@ -11,10 +11,13 @@
 class KitHelper
 {
 public:
-
+	KitHelper();
+	KitHelper(const Kit &attacker);
+	KitHelper(const Kit &attacker, const Kit &victim);
+	void run();
 private:
-	Kit attacker;
-	Kit victim;
+	Kit _attacker;
+	Kit _victim;
 };
 
 #endif //FR_KIT_HELPER_H

@@ -3,6 +3,7 @@
 
 # include <iostream>
 # include <string>
+# include <vector>
 
 class Kit;
 
@@ -16,6 +17,7 @@ class Kit
 {
 public:
 	// Static
+	static const Kit &templateKit;
 	static const std::string &templateName;
 	static const Stats &templateStats;
 
@@ -32,20 +34,26 @@ public:
 	const float &getCurrPV() const;
 	void setCurrPV(const float &currPV);
 	const bool &getIsDead() const;
+	const std::vector<class Damage> &getAttacks();
+	float extractStat(t_stats stat) const;
 
 	// Overloads
 	friend std::ostream &operator<<(std::ostream &os, const Kit &kit);
 	Kit &operator=(float rhs);
 	Kit &operator+=(float rhs);
 	Kit &operator-=(float rhs);
+	bool operator==(const Kit &rhs) const;
+	bool operator!=(const Kit &rhs) const;
 
 	// Methods
-	float extractStat(t_stats stat) const;
 	void changePV(float amount);
+	void addAttack(Damage attack);
+	void removeAttack(const std::string &name);
 
 private:
 	const std::string _name;
 	const Stats _stats;
+	std::vector<class Damage> _attacks;
 	float _currPV;
 	float _shield;
 	bool _isDead;

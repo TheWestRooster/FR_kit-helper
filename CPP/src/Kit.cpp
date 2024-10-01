@@ -1,7 +1,7 @@
 #include "Kit.h"
 
 // Canonical Orthodox Form
-
+const Kit &Kit::templateKit = Kit();
 const std::string &Kit::templateName = KIT_DEFAULT_NAME;
 const Stats &Kit::templateStats = Stats();
 
@@ -60,6 +60,23 @@ const bool &Kit::getIsDead() const
 	return _isDead;
 }
 
+const std::vector<class Damage> &Kit::getAttacks()
+{
+	return _attacks;
+}
+
+float Kit::extractStat(t_stats stat) const
+{
+	if (stat != CPV && stat != MPV)
+		return _stats.getValue(stat);
+	if (stat == CPV)
+		return _currPV;
+	if (stat == MPV)
+		return _stats.getValue(PVS) - _currPV;
+	return 0;
+	
+}
+
 // Overload
 std::ostream &operator<<(std::ostream &os, const Kit &kit)
 {
@@ -86,19 +103,21 @@ Kit &Kit::operator-=(float rhs)
 	return (*this);
 }
 
-// Methods
-float Kit::extractStat(t_stats stat) const
-{
-	if (stat != CPV && stat != MPV)
-		return _stats.getValue(stat);
-	if (stat == CPV)
-		return _currPV;
-	if (stat == MPV)
-		return _stats.getValue(PVS) - _currPV;
-	return 0;
-	
+bool Kit::operator==(const Kit &rhs) const {
+	if (_name != rhs._name)
+		return false;
+	if (_stats != rhs._stats)
+		return false;
+	if (_attacks != rhs._attacks)
+		return false;
+	return false;
 }
 
+bool Kit::operator!=(const Kit &rhs) const {
+	return !(*this == rhs);
+}
+
+// Methods
 void Kit::changePV(float amount)
 {
 	if (_isDead)
@@ -110,4 +129,18 @@ void Kit::changePV(float amount)
 		return ;
 	_currPV = 0;
 	_isDead = true;
+}
+
+void Kit::addAttack(Damage attack) {
+	_attacks.push_back(attack);
+}
+
+void Kit::removeAttack(const std::string &attack) {
+	for (std::vector<class Damage>::iterator it = _attacks.begin(); it < _attacks.end(); it++)
+	{
+		if (it.base()->getName() != attack)
+			continue ;
+		_attacks.erase(it);
+		return ;
+	}
 }
