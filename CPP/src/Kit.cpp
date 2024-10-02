@@ -125,7 +125,7 @@ Kit & Kit::operator+=(const Damage &rhs) {
 		if (_attacks[i].getName() != rhs.getName())
 			continue;
 		_attacks[i] += rhs;
-		break ;
+		return (*this);
 	}
 	addAttack(rhs);
 	return *this;
@@ -160,6 +160,10 @@ void Kit::changePV(float amount)
 }
 
 void Kit::addAttack(Damage attack) {
+	if (attack == Damage::damageNull)
+		return ;
+	if (attack.getLinkedKit() != *this)
+		attack.setLinkedKit(*this);
 	_attacks.push_back(attack);
 }
 

@@ -18,13 +18,10 @@ Kit InputHandler::loadKit(const std::string &kit)
 
 	Kit newKit(kitName, kitStat);
 	Damage newDamage;
-	while (true)
-	{
-		newDamage = _loadAttacks(file);
-		if (newDamage == Damage::damageNull)
-			break ;
-	}
-
+	do {
+		newDamage = _loadAttack(file);
+		newKit += newDamage;
+	} while (!file.eof());
 	return newKit;
 }
 
@@ -56,17 +53,74 @@ Stats InputHandler::_loadStats(std::fstream& file)
 	return kitStat;
 }
 
-Damage InputHandler::_loadAttacks(std::fstream& file)
+Damage InputHandler::_loadAttack(std::fstream& file)
 {
-	Damage damage;
+	Damage damage = Damage::damageNull;
 	std::string	fileLine;
+	std::string tmp;
+	std::vector<t_stats> stats;
+	std::vector<float> ratios;
 
 	while (!file.eof())
 	{
 		std::getline(file, fileLine);
-		if (fileLine.empty() || fileLine.front() != '#')
+		if (fileLine.empty() || fileLine != "#ATTACK:")
 			continue;
-		std::cout << fileLine << std::endl;
+		// Name
+		std::getline(file, fileLine);
+		if (fileLine.compare(0, 6, "Name: ") != 0)
+			return Damage::damageNull;
+		damage.setName(&fileLine[6]);
+		// Type
+		std::getline(file, fileLine);
+		if (fileLine.compare(0, 6, "Type: ") != 0)
+			return Damage::damageNull;
+		damage.setType(Damage::strToType(&fileLine[6]));
+		// Cooldown
+		std::getline(file, fileLine);
+		if (fileLine.compare(0, 10, "Cooldown: ") != 0)
+			return Damage::damageNull;
+		damage.setCooldown(std::stof(&fileLine[10]));
+		// Base Damage
+		std::getline(file, fileLine);
+		if (fileLine.compare(0, 13, "Base Damage: ") != 0)
+			return Damage::damageNull;
+		damage.setBase(std::stof(&fileLine[13]));
+		// Stats
+		{
+			std::getline(file, fileLine);
+			if (fileLine.compare(0, 7, "Stats: ") != 0)
+				return Damage::damageNull;
+			for (std::string::iterator it = fileLine.begin() + 7; it < fileLine.end(); ++it) {
+				tmp.clear();
+				while (it < fileLine.end() && *it != ' ') {
+					tmp += *it;
+					it++;
+				}
+				if (Stats::strToStat(tmp) == ESTATS_END)
+					return Damage::damageNull;
+				stats.push_back(Stats::strToStat(tmp));
+			}
+		}
+		// Ratios
+		{
+			std::getline(file, fileLine);
+			if (fileLine.compare(0, 7, "Ratio: ") != 0)
+				return Damage::damageNull;
+			for (std::string::iterator it = fileLine.begin() + 7; it < fileLine.end(); ++it) {
+				tmp.clear();
+				while (it < fileLine.end() && *it != ' ') {
+					tmp += *it;
+					it++;
+				}
+				ratios.push_back(std::stof(tmp) / 100);
+			}
+			if (ratios.size() != stats.size())
+				return Damage::damageNull;
+		}
+		for (size_t i = 0; i < stats.size(); ++i)
+			damage.addRatio(stats[i], ratios[i]);
+		break;
 	}
 	return damage;
 }
