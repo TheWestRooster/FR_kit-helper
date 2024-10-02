@@ -34,26 +34,28 @@ public:
 	void setName(const std::string &name);
 	const Stats &getStats() const;
 	void setStats(const Stats &stats);
+	const std::vector<class Damage> &getAttacks() const;
 	const float &getCurrPV() const;
 	void setCurrPV(const float &currPV);
 	const bool &getIsDead() const;
-	const std::vector<class Damage> &getAttacks();
 	float extractStat(t_stats stat) const;
 
 	// Overloads
 	friend std::ostream &operator<<(std::ostream &os, const Kit &kit);
+	bool operator==(const Kit &rhs) const;
+	bool operator!=(const Kit &rhs) const;
 	Kit &operator=(float rhs);
 	Kit &operator+=(float rhs);
 	Kit &operator-=(float rhs);
 	Kit &operator+=(const Stats &rhs);
 	Kit &operator-=(const Stats &rhs);
-	bool operator==(const Kit &rhs) const;
-	bool operator!=(const Kit &rhs) const;
+	Kit &operator+=(const Damage &rhs);
 
 	// Methods
 	void changePV(float amount);
 	void addAttack(Damage attack);
 	void removeAttack(const std::string &name);
+	Damage &findAttack(const std::string &name);
 
 private:
 	const std::string _name;

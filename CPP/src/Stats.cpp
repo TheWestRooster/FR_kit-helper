@@ -4,6 +4,7 @@
 
 #include "Stats.h"
 
+// Orthodox Canonical Form
 Stats::Stats() {
 	this->_stats[PVS] = 2500;
 	this->_stats[RGN] = 5;
@@ -20,13 +21,13 @@ Stats::Stats() {
 	this->_stats[VMP] = 0;
 	this->_stats[AVP] = 0;
 	this->_stats[CDR] = 0;
-	this->_stats[CRC] = 0;
-	this->_stats[CRM] = 0.5;
+	this->_stats[CRIT_CHANCE] = 0;
+	this->_stats[CRIT_DAMAGE] = 0.5;
 }
 
-Stats::Stats(float stats[CRM + 1])
+Stats::Stats(float stats[CRIT_DAMAGE + 1])
 {
-	for (int i = 0; i < CRM + 1; i++)
+	for (int i = 0; i < CRIT_DAMAGE + 1; i++)
 	{
 		if (!stats)
 			_stats[i] = 0;
@@ -36,16 +37,27 @@ Stats::Stats(float stats[CRM + 1])
 }
 
 Stats::Stats(const Stats &s) {
-	for (int i = 0; i < CRM + 1; i++)
+	for (int i = 0; i < CRIT_DAMAGE + 1; i++)
 		_stats[i] = s._stats[i];
 }
 
 Stats &Stats::operator=(const Stats &s) {
-	for (int i = 0; i < CRM + 1; i++)
+	for (int i = 0; i < CRIT_DAMAGE + 1; i++)
 		_stats[i] = s._stats[i];
 	return (*this);
 }
 
+// Accessors
+float Stats::getValue(t_stats stat) const
+{
+	return _stats[stat];
+}
+
+void Stats::setValue(t_stats stat, float newValue) {
+	_stats[stat] = newValue;
+}
+
+// Overloads
 std::ostream &operator<<(std::ostream &os, const Stats &stats) {
 	std::cout << BGRN " PVs: " CLR << stats.getValue(PVS) << std::endl;
 	std::cout << BGRN " Regen: " CLR << 5 * stats.getValue(RGN) << "PVs/5s" << std::endl;
@@ -62,27 +74,27 @@ std::ostream &operator<<(std::ostream &os, const Stats &stats) {
 	std::cout << BPRP " Vamp: " CLR << roundf(stats.getValue(VMP) * 100) << "%" << std::endl;
 	std::cout << BPRP " AntiVamp: " CLR << roundf(stats.getValue(AVP) * 100) << "%" << std::endl;
 	std::cout << BCYN " CDR: " CLR << stats.getValue(CDR) << std::endl;
-	std::cout << BRED " CritChance: " CLR << stats.getValue(CRC) * 100 << std::endl;
-	std::cout << BRED " CritDamage: " CLR << roundf(stats.getValue(CRM) * 100) << "%" << std::endl;
+	std::cout << BRED " CritChance: " CLR << stats.getValue(CRIT_CHANCE) * 100 << std::endl;
+	std::cout << BRED " CritDamage: " CLR << roundf(stats.getValue(CRIT_DAMAGE) * 100) << "%" << std::endl;
 	return os;
 }
 
 Stats &Stats::operator+=(const Stats &rhs)
 {
-	for (int i = 0; i < CRM + 1; i++)
+	for (int i = 0; i < CRIT_DAMAGE + 1; i++)
 		_stats[i] += rhs._stats[i];
 	return (*this);
 }
 
 Stats &Stats::operator-=(const Stats &rhs)
 {
-	for (int i = 0; i < CRM + 1; i++)
+	for (int i = 0; i < CRIT_DAMAGE + 1; i++)
 		_stats[i] -= rhs._stats[i];
 	return (*this);
 }
 
 bool Stats::operator==(const Stats &rhs) const {
-	for (int i = 0; i < CRM + 1; i++)
+	for (int i = 0; i < CRIT_DAMAGE + 1; i++)
 	{
 		if (_stats[i] != rhs._stats[i])
 			return false;
@@ -94,15 +106,16 @@ bool Stats::operator!=(const Stats &rhs) const {
 	return !(*this == rhs);
 }
 
+// Static
 const std::string Stats::statToStr(t_stats stat)
 {
 	switch (stat)
 	{
 	case PVS:
 		return "PVS";
-	case MPV:
+	case MISSING_PVS:
 		return "MISSING_PVS";
-	case CPV:
+	case CURRENT_PVS:
 		return "CURRENT_PVS";
 	case RGN:
 		return "RGN";
@@ -132,15 +145,15 @@ const std::string Stats::statToStr(t_stats stat)
 		return "AVP";
 	case CDR:
 		return "CDR";
-	case CRC:
+	case CRIT_CHANCE:
 		return "CRIT_CHANCE";
-	case CRM:
+	case CRIT_DAMAGE:
 		return "CRIT_DAMAGE";
 	case VICTIM_PVS:
 		return "VICTIM_PVS";
-	case VICTIM_MPV:
+	case VICTIM_MISSING_PVS:
 		return "VICTIM_MISSING_PVS";
-	case VICTIM_CPV:
+	case VICTIM_CURRENT_PVS:
 		return "VICTIM_CURRENT_PVS";
 	case VICTIM_RGN:
 		return "VICTIM_RGN";
@@ -170,9 +183,9 @@ const std::string Stats::statToStr(t_stats stat)
 		return "VICTIM_AVP";
 	case VICTIM_CDR:
 		return "VICTIM_CDR";
-	case VICTIM_CRC:
+	case VICTIM_CRIT_CHANCE:
 		return "VICTIM_CRIT_CHANCE";
-	case VICTIM_CRM:
+	case VICTIM_CRIT_DAMAGE:
 		return "VICTIM_CRIT_DAMAGE";
 	default:
 		return "";
@@ -182,8 +195,8 @@ const std::string Stats::statToStr(t_stats stat)
 t_stats Stats::strToStat(const std::string &str)
 {
 	if (str == "PVS") return PVS;
-	if (str == "MISSING_PVS") return MPV;
-	if (str == "CURRENT_PVS") return CPV;
+	if (str == "MISSING_PVS") return MISSING_PVS;
+	if (str == "CURRENT_PVS") return CURRENT_PVS;
 	if (str == "RGN") return RGN;
 	if (str == "ATK") return ATK;
 	if (str == "PWR") return PWR;
@@ -198,11 +211,11 @@ t_stats Stats::strToStat(const std::string &str)
 	if (str == "VMP") return VMP;
 	if (str == "AVP") return AVP;
 	if (str == "CDR") return CDR;
-	if (str == "CRIT_CHANCE") return CRC;
-	if (str == "CRIT_DAMAGE") return CRM;
+	if (str == "CRIT_CHANCE") return CRIT_CHANCE;
+	if (str == "CRIT_DAMAGE") return CRIT_DAMAGE;
 	if (str == "VICTIM_PVS") return VICTIM_PVS;
-	if (str == "VICTIM_MISSING_PVS") return VICTIM_MPV;
-	if (str == "VICTIM_CURRENT_PVS") return VICTIM_CPV;
+	if (str == "VICTIM_MISSING_PVS") return VICTIM_MISSING_PVS;
+	if (str == "VICTIM_CURRENT_PVS") return VICTIM_CURRENT_PVS;
 	if (str == "VICTIM_RGN") return VICTIM_RGN;
 	if (str == "VICTIM_ATK") return VICTIM_ATK;
 	if (str == "VICTIM_PWR") return VICTIM_PWR;
@@ -217,16 +230,7 @@ t_stats Stats::strToStat(const std::string &str)
 	if (str == "VICTIM_VMP") return VICTIM_VMP;
 	if (str == "VICTIM_AVP") return VICTIM_AVP;
 	if (str == "VICTIM_CDR") return VICTIM_CDR;
-	if (str == "VICTIM_CRIT_CHANCE") return VICTIM_CRC;
-	if (str == "VICTIM_CRIT_DAMAGE") return VICTIM_CRM;
+	if (str == "VICTIM_CRIT_CHANCE") return VICTIM_CRIT_CHANCE;
+	if (str == "VICTIM_CRIT_DAMAGE") return VICTIM_CRIT_DAMAGE;
 	return ESTATS_END;
-}
-
-float Stats::getValue(t_stats stat) const
-{
-	return _stats[stat];
-}
-
-void Stats::setValue(t_stats stat, float newValue) {
-	_stats[stat] = newValue;
 }

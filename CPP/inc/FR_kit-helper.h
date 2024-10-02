@@ -23,12 +23,14 @@ private:
 	Kit _victim;
 	void _help();
 	void _load(const t_command &input);
+	void _reload(const t_command &input);
 	void _print(const t_command &input);
 	void _change(const t_command &input);
 	void _swap(const t_command &input);
+	void _utils();
 	void _damage(const t_command &input);
-	void _invalidParams(const t_command &input);
-	void _unknownCommand();
+	static void _unknownCommand();
+	static void _invalidParams(const t_command &input);
 };
 
 #endif //FR_KIT_HELPER_H

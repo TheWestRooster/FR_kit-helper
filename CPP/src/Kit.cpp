@@ -19,6 +19,7 @@ Kit::Kit(const std::string &name, const Stats &stats) : _name(name), _stats(stat
 }
 
 Kit::Kit(const Kit &src) : _name(src._name), _stats(src._stats) {
+	this->_attacks = src._attacks;
 	_currPV = getStats().getValue(PVS);
 	_isDead = src._isDead;
 	_shield = src._shield;
@@ -27,6 +28,7 @@ Kit::Kit(const Kit &src) : _name(src._name), _stats(src._stats) {
 Kit &Kit::operator=(const Kit &rhs) {
 	const_cast<std::string &>(this->_name) = rhs._name;
 	const_cast<Stats &>(this->_stats) = rhs._stats;
+	this->_attacks = rhs._attacks;
 	_currPV = getStats().getValue(PVS);
 	_isDead = rhs._isDead;
 	_shield = rhs._shield;
@@ -69,21 +71,17 @@ const bool &Kit::getIsDead() const
 	return _isDead;
 }
 
-const std::vector<class Damage> &Kit::getAttacks()
-{
+const std::vector<class Damage> &Kit::getAttacks() const {
 	return _attacks;
 }
 
 float Kit::extractStat(t_stats stat) const
 {
-	if (stat != CPV && stat != MPV)
+	if (stat != CURRENT_PVS && stat != MISSING_PVS)
 		return _stats.getValue(stat);
-	if (stat == CPV)
+	if (stat == CURRENT_PVS)
 		return _currPV;
-	if (stat == MPV)
-		return _stats.getValue(PVS) - _currPV;
-	return 0;
-	
+	return _stats.getValue(PVS) - _currPV;
 }
 
 // Overload
@@ -122,6 +120,17 @@ Kit &Kit::operator-=(const Stats &rhs) {
 	return (*this);
 }
 
+Kit & Kit::operator+=(const Damage &rhs) {
+	for (size_t i = 0; i < _attacks.size(); ++i) {
+		if (_attacks[i].getName() != rhs.getName())
+			continue;
+		_attacks[i] += rhs;
+		break ;
+	}
+	addAttack(rhs);
+	return *this;
+}
+
 bool Kit::operator==(const Kit &rhs) const {
 	if (_name != rhs._name)
 		return false;
@@ -155,11 +164,20 @@ void Kit::addAttack(Damage attack) {
 }
 
 void Kit::removeAttack(const std::string &attack) {
-	for (std::vector<class Damage>::iterator it = _attacks.begin(); it < _attacks.end(); it++)
+	for (auto it = _attacks.begin(); it < _attacks.end(); it++)
 	{
 		if (it.base()->getName() != attack)
 			continue ;
 		_attacks.erase(it);
 		return ;
 	}
+}
+
+Damage &Kit::findAttack(const std::string &name) {
+	for (auto it = _attacks.begin(); it < _attacks.end(); it++)
+	{
+		if (it.base()->getName() == name)
+			return *it.base();
+	}
+	return const_cast<Damage &>(Damage::damageNull);
 }

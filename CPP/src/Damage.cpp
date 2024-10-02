@@ -1,7 +1,12 @@
 #include "Damage.h"
 
+
 // Canonical Orthodox Form
-Damage::Damage(const std::string &name, const Kit &kit, const t_type &type, float cooldown, float base)
+Damage::Damage()
+	: _name("None"), _linkedKit(Kit::templateKit), _type(ETYPE_END), _cooldown(0), _base(0)
+{}
+
+Damage::Damage(const std::string name, const Kit &kit, const t_type type, float cooldown, float base)
 	: _name(name), _linkedKit(kit), _type(type), _cooldown(cooldown), _base(base)
 {}
 
@@ -60,6 +65,22 @@ void Damage::setCooldown(const float &cooldown)
 	const_cast<float &>(_cooldown) = cooldown;
 }
 
+const float & Damage::getBase() const {
+	return _base;
+}
+
+void Damage::setBase(float base) {
+	const_cast<float &>(_base) = base;
+}
+
+const std::vector<float> & Damage::getRatios() const {
+	return _ratios;
+}
+
+const std::vector<t_stats> & Damage::getStats() const {
+	return _stats;
+}
+
 // Methods
 void Damage::addRatio(t_stats stat, float ratio) {
 	this->_stats.push_back(stat);
@@ -102,21 +123,21 @@ float Damage::calculateDamage(const Kit &victim, bool details)
 	if (details)
 		std::cout << " -> " CLR << roundf(damage);
 	damage *= calculateReduction(victim);
-	if ((critChance = _linkedKit.extractStat(CRC)))
-		critDamage = damage * (_linkedKit.extractStat(CRM));
+	if ((critChance = _linkedKit.extractStat(CRIT_CHANCE)))
+		critDamage = damage * (_linkedKit.extractStat(CRIT_DAMAGE));
 	if (details)
 	{
 		std::cout << CLR " = " PRP "-" << roundf(damage) << " PVS" CLR;
 		if (critDamage)
 		{
 			std::cout << RED " + " << roundf(critDamage) << " PVS" CLR;
-			critDamage = damage * (1 - critChance + critChance * (1 + _linkedKit.extractStat(CRM)));
+			critDamage = damage * (1 - critChance + critChance * (1 + _linkedKit.extractStat(CRIT_DAMAGE)));
 			std::cout << BBLK " ( ~ -" << roundf(critDamage) << " PVS )" CLR;
 		}
 		std::cout << std::endl;
 	}
 
-	damage *= (1 - critChance + critChance * (1 + _linkedKit.extractStat(CRM)));
+	damage *= (1 - critChance + critChance * (1 + _linkedKit.extractStat(CRIT_DAMAGE)));
 	return damage;
 }
 
@@ -149,6 +170,17 @@ float Damage::calculateDPS(const Kit &victim)
 }
 
 // Overloads
+std::ostream & operator<<(std::ostream &os, Damage &damage) {
+	os << damage.getName() << ": ";
+	os << damage.getBase();
+	for (size_t i = 0; i < damage._stats.size(); ++i) {
+		os << " + ";
+		os << roundf(damage.getRatios()[i] * 100.0f) << "% ";
+		os << Stats::statToStr(damage.getStats()[i]);
+	}
+	return (os);
+}
+
 bool Damage::operator==(const Damage &rhs) const {
 	if (_name != rhs._name)
 		return false;
@@ -163,7 +195,24 @@ bool Damage::operator==(const Damage &rhs) const {
 	return true;
 }
 
+bool Damage::operator!=(const Damage &rhs) const {
+	return !(*this == rhs);
+}
+
+Damage & Damage::operator+=(const Damage &rhs) {
+	for (size_t i = 0; i < rhs._stats.size(); i++)
+		this->addRatio(rhs._stats[i], rhs._ratios[i]);
+	return *this;
+}
+
+Damage & Damage::operator--() {
+	this->popRatio();
+	return (*this);
+}
+
 // Static
+const Damage Damage::damageNull;
+
 float Damage::statToReduction(float stat)
 {
 	if (stat > 0)
@@ -177,3 +226,24 @@ float Damage::penToMultiplier(float pen, float res)
 	res = 1.0f / Damage::statToReduction(res);
 	return 1.0f + res * pen / 2500.0f;
 }
+
+std::string Damage::typeToStr(t_type type) {
+	switch (type) {
+		case PHYSICAL:
+			return "PHYSICAL";
+		case MAGICAL:
+			return "MAGICAL";
+		case BRUT:
+			return "BRUT";
+		default:
+			return "";
+	}
+}
+
+t_type Damage::strToType(const std::string &name) {
+	if (name == "PHYSICAL") return PHYSICAL;
+	if (name == "MAGICAL") return MAGICAL;
+	if (name == "BRUT") return BRUT;
+	return ETYPE_END;
+}
+

@@ -18,8 +18,12 @@ typedef enum e_type {
 class Damage
 {
 public:
+	// Static
+	static const Damage damageNull;
+
 	// Orthodox Canonical Form
-	Damage(const std::string &name, const Kit &kit, const t_type &type, float cooldown, float base);
+	Damage();
+	Damage(const std::string name, const Kit &kit, const t_type type, float cooldown, float base);
 	Damage(const Damage &src);
 	Damage &operator=(const Damage &rhs);
 	~Damage();
@@ -33,6 +37,10 @@ public:
 	void setLinkedKit(const Kit &linkedKit);
 	const float &getCooldown() const;
 	void setCooldown(const float &cooldown);
+	const float &getBase() const;
+	void setBase(float base);
+	const std::vector<float> &getRatios() const;
+	const std::vector<t_stats> &getStats() const;
 
 	// Methods
 	void addRatio(t_stats stat, float ratio);
@@ -42,11 +50,17 @@ public:
 	float calculateDPS(const Kit &victim);
 
 	// Overloads
+	friend std::ostream &operator<<(std::ostream &os, Damage &damage);
 	bool operator==(const Damage &rhs) const;
+	bool operator!=(const Damage &rhs) const;
+	Damage &operator+=(const Damage &rhs);
+	Damage &operator--();
 
 	// Static
 	static float statToReduction(float stat);
 	static float penToMultiplier(float pen, float res);
+	static std::string typeToStr(t_type type);
+	static t_type strToType(const std::string &name);
 
 private:
 	const std::string _name;

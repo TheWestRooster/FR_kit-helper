@@ -8,19 +8,34 @@ Kit InputHandler::loadKit(const std::string &kit)
 {
 	std::string		filePath = "user/" + kit + ".kit";
 	std::fstream	file(filePath);
-	std::string		fileLine;
-
 	std::string		kitName;
-	Stats			kitStat;
-	std::string		statLine;
-	float			statValue;
+
+	std::getline(file, kitName);
+	Stats kitStat = _loadStats(file);
 
 	if (!file.is_open())
 		throw InputHandler::KitFileNotFound();
 
-	std::getline(file, kitName);
-	
-	for (int i = 0; i < CRM + 1; i++)
+	Kit newKit(kitName, kitStat);
+	Damage newDamage;
+	while (true)
+	{
+		newDamage = _loadAttacks(file);
+		if (newDamage == Damage::damageNull)
+			break ;
+	}
+
+	return newKit;
+}
+
+Stats InputHandler::_loadStats(std::fstream& file)
+{
+	Stats			kitStat;
+	std::string		fileLine;
+	std::string		statLine;
+	float			statValue;
+
+	for (int i = 0; i < CRIT_DAMAGE + 1; i++)
 	{
 		if (file.eof())
 			throw KitFileIncomplete();
@@ -29,17 +44,31 @@ Kit InputHandler::loadKit(const std::string &kit)
 		statValue = std::stof(statLine);
 		if (statLine.find('%') != std::string::npos)
 			statValue /= 100.0f;
-		kitStat.setValue((t_stats)i, statValue);
+		kitStat.setValue(static_cast<t_stats>(i), statValue);
 		if (i != CDR)
 			continue ;
 		if (file.peek() != '\n')
 			continue ;
-		kitStat.setValue(CRC, 0.0f);
-		kitStat.setValue(CRM, 0.0f);
+		kitStat.setValue(CRIT_CHANCE, 0.0f);
+		kitStat.setValue(CRIT_DAMAGE, 0.0f);
 		break ;
 	}
-	Kit newKit(kitName, kitStat);
-	return newKit;
+	return kitStat;
+}
+
+Damage InputHandler::_loadAttacks(std::fstream& file)
+{
+	Damage damage;
+	std::string	fileLine;
+
+	while (!file.eof())
+	{
+		std::getline(file, fileLine);
+		if (fileLine.empty() || fileLine.front() != '#')
+			continue;
+		std::cout << fileLine << std::endl;
+	}
+	return damage;
 }
 
 std::string InputHandler::userInput(const std::string &prompt, bool (*check)(const std::string &))
@@ -101,3 +130,4 @@ t_command InputHandler::commandInput(const std::string &prompt, bool (*check)(co
 bool InputHandler::ignoreInput(const t_command &) {
 	return true;
 }
+

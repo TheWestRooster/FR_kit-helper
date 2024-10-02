@@ -5,11 +5,10 @@
 #ifndef CPP_STATS_H
 #define CPP_STATS_H
 
-#include <ostream>
 #include <iostream>
 #include <string>
 #include <cmath>
-#include "colors.h"
+#include <colors.h>
 
 typedef enum e_stats {
 	PVS = 0,
@@ -27,10 +26,10 @@ typedef enum e_stats {
 	VMP,
 	AVP,
 	CDR,
-	CRC,
-	CRM,
-	MPV,
-	CPV,
+	CRIT_CHANCE,
+	CRIT_DAMAGE,
+	MISSING_PVS,
+	CURRENT_PVS,
 	VICTIM_PVS,
 	VICTIM_RGN,
 	VICTIM_ATK,
@@ -46,23 +45,26 @@ typedef enum e_stats {
 	VICTIM_VMP,
 	VICTIM_AVP,
 	VICTIM_CDR,
-	VICTIM_CRC,
-	VICTIM_CRM,
-	VICTIM_MPV,
-	VICTIM_CPV,
+	VICTIM_CRIT_CHANCE,
+	VICTIM_CRIT_DAMAGE,
+	VICTIM_MISSING_PVS,
+	VICTIM_CURRENT_PVS,
 	ESTATS_END
 } t_stats;
 
 class Stats {
 private:
-	float _stats[CRM + 1];
+	float _stats[CRIT_DAMAGE + 1];
 public:
 	// Canonical Orthodox Form
 	Stats();
-	Stats(void *);
-	Stats(float stats[CRM + 1]);
+	Stats(float stats[CRIT_DAMAGE + 1]);
 	Stats(const Stats &s);
 	Stats &operator=(const Stats &s);
+
+	// Accessors
+	float getValue(t_stats stat) const;
+	void setValue(t_stats stat, float newValue);
 
 	// Overloads
 	friend std::ostream &operator<<(std::ostream &os, const Stats &stats);
@@ -74,10 +76,6 @@ public:
 	// Static
 	static const std::string statToStr(t_stats stat);
 	static t_stats strToStat(const std::string &str);
-
-	// Accessors
-	float getValue(t_stats stat) const;
-	void setValue(t_stats stat, float newValue);
 };
 
 

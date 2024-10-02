@@ -40,6 +40,9 @@ class InputHandler {
 					return BRED "Kit File is incomplete." CLR ;
 				}
 		};
+	private:
+		static Stats _loadStats(std::fstream &file);
+		static Damage _loadAttacks(std::fstream &file);
 };
 
 
