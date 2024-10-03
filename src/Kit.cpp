@@ -26,8 +26,6 @@ Kit &Kit::operator=(const Kit &rhs) {
 	const_cast<std::string &>(this->_name) = rhs._name;
 	const_cast<Stats &>(this->_stats) = rhs._stats;
 	_attacks = rhs._attacks;
-	for (Damage it : _attacks)
-		it.setLinkedKit(*this);
 	_currPV = getStats().getValue(PVS);
 	_isDead = rhs._isDead;
 	_shield = rhs._shield;
@@ -161,10 +159,6 @@ void Kit::changePV(float amount)
 void Kit::addAttack(Damage attack) {
 	if (attack == Damage::damageNull)
 		return ;
-	if (attack.getLinkedKit() == 0)
-		attack.setLinkedKit(*this);
-	if (*attack.getLinkedKit() != *this)
-		attack.setLinkedKit(*this);
 	_attacks.push_back(attack);
 }
 

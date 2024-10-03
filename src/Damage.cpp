@@ -3,11 +3,11 @@
 
 // Canonical Orthodox Form
 Damage::Damage()
-	: _name("None"), _linkedKit(0), _type(ETYPE_END), _cooldown(0), _base(0)
+	: _name("None"), _type(ETYPE_END), _cooldown(0), _base(0)
 {}
 
-Damage::Damage(const std::string &name, Kit &kit, t_type type, float cooldown, float base)
-	: _name(name), _linkedKit(&kit), _type(type), _cooldown(cooldown), _base(base)
+Damage::Damage(const std::string &name, t_type type, float cooldown, float base)
+	: _name(name), _type(type), _cooldown(cooldown), _base(base)
 {}
 
 Damage::Damage(const Damage &src) {
@@ -16,7 +16,6 @@ Damage::Damage(const Damage &src) {
 
 Damage &Damage::operator=(const Damage &rhs) {
 	const_cast<std::string &>(this->_name) = rhs._name;
-	this->_linkedKit = rhs._linkedKit;
 	this->_type = rhs._type;
 	this->_cooldown = rhs._cooldown;
 	_base = rhs._base;
@@ -42,16 +41,6 @@ t_type Damage::getType() const {
 
 void Damage::setType(t_type type) {
 	const_cast<t_type &>(_type) = type;
-}
-
-const Kit *Damage::getLinkedKit() const {
-	return _linkedKit;
-}
-
-void Damage::setLinkedKit(Kit &linkedKit) {
-	if (_linkedKit && *_linkedKit == linkedKit)
-		return ;
-	_linkedKit = &linkedKit;
 }
 
 const float &Damage::getCooldown() const
@@ -94,7 +83,7 @@ void Damage::popRatio()
 	_ratios.pop_back();
 }
 
-float Damage::calculateDamage(const Kit &victim, bool details)
+float Damage::calculateDamage(const Kit &attacker, const Kit &victim, bool details)
 {
 	float damage;
 	float critDamage = 0;
@@ -109,7 +98,7 @@ float Damage::calculateDamage(const Kit &victim, bool details)
 		if (_stats[i] >= VICTIM_PVS)
 			instance = _ratios[i] * victim.extractStat((t_stats)(this->_stats[i] - VICTIM_PVS));
 		else
-			instance = _ratios[i] * _linkedKit->extractStat(_stats[i]);
+			instance = _ratios[i] * attacker.extractStat(_stats[i]);
 		if (details)
 		{
 			std::cout << BBLK " + ";
@@ -121,26 +110,25 @@ float Damage::calculateDamage(const Kit &victim, bool details)
 	}
 	if (details)
 		std::cout << " -> " CLR << roundf(damage);
-	damage *= calculateReduction(victim);
-	if ((critChance = _linkedKit->extractStat(CRIT_CHANCE)))
-		critDamage = damage * (_linkedKit->extractStat(CRIT_DAMAGE));
+	damage *= calculateReduction(attacker, victim);
+	if ((critChance = attacker.extractStat(CRIT_CHANCE)))
+		critDamage = damage * (attacker.extractStat(CRIT_DAMAGE));
 	if (details)
 	{
 		std::cout << CLR " = " PRP "-" << roundf(damage) << " PVS" CLR;
 		if (critDamage)
 		{
 			std::cout << RED " + " << roundf(critDamage) << " PVS" CLR;
-			critDamage = damage * (1 - critChance + critChance * (1 + _linkedKit->extractStat(CRIT_DAMAGE)));
+			critDamage = damage * (1 - critChance + critChance * (1 + attacker.extractStat(CRIT_DAMAGE)));
 			std::cout << BBLK " ( ~ -" << roundf(critDamage) << " PVS )" CLR;
 		}
 		std::cout << std::endl;
 	}
-
-	damage *= (1 - critChance + critChance * (1 + _linkedKit->extractStat(CRIT_DAMAGE)));
+	damage *= (1 - critChance + critChance * (1 + attacker.extractStat(CRIT_DAMAGE)));
 	return damage;
 }
 
-float Damage::calculateReduction(const Kit &victim) {
+float Damage::calculateReduction(const Kit &attacker, const Kit &victim) {
 	float victimStat;
 
 	victimStat = 0;
@@ -148,8 +136,8 @@ float Damage::calculateReduction(const Kit &victim) {
 	{
 	case PHYSICAL:
 		victimStat = victim.getStats().getValue(DEF);
-		victimStat *= 1 - _linkedKit->getStats().getValue(IGD);
-		victimStat -= _linkedKit->getStats().getValue(LET);
+		victimStat *= 1 - attacker.getStats().getValue(IGD);
+		victimStat -= attacker.getStats().getValue(LET);
 		break ;
 	case MAGICAL:
 		victimStat = victim.getStats().getValue(RES);
@@ -159,17 +147,17 @@ float Damage::calculateReduction(const Kit &victim) {
 	}
 	victimStat = Damage::statToReduction(victimStat);
 	if (_type == MAGICAL)
-		victimStat *= Damage::penToMultiplier(_linkedKit->getStats().getValue(PEN), victimStat);
+		victimStat *= Damage::penToMultiplier(attacker.getStats().getValue(PEN), victimStat);
 	return victimStat;
 }
 
-float Damage::calculateDPS(const Kit &victim)
+float Damage::calculateDPS(const Kit &attacker, const Kit &victim)
 {
-	return calculateDamage(victim) / _cooldown;
+	return calculateDamage(attacker, victim) / _cooldown;
 }
 
 // Overloads
-std::ostream & operator<<(std::ostream &os, Damage &damage) {
+std::ostream & operator<<(std::ostream &os, const Damage &damage) {
 	os << damage.getName() << ": ";
 	os << damage.getBase();
 	for (size_t i = 0; i < damage._stats.size(); ++i) {
@@ -183,8 +171,6 @@ std::ostream & operator<<(std::ostream &os, Damage &damage) {
 bool Damage::operator==(const Damage &rhs) const {
 	if (_name != rhs._name)
 		return false;
-	if (_linkedKit != rhs._linkedKit)
-		return (false);
 	if (_type != rhs._type)
 		return false;
 	if (_stats != rhs._stats)
@@ -245,4 +231,3 @@ t_type Damage::strToType(const std::string &name) {
 	if (name == "BRUT") return BRUT;
 	return ETYPE_END;
 }
-

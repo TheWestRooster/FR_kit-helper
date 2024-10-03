@@ -178,9 +178,7 @@ void KitHelper::_change(const t_command &input)
 void KitHelper::_swap(const t_command &input)
 {
 	(void)input;
-	Kit temp(_attacker);
-	_attacker = _victim;
-	_victim = temp;
+	std::swap(_attacker, _victim);
 	PRINT NL;
 	PRINT YLW "Swapped " CLR << _victim.getName() << YLW " and " CLR << _attacker.getName() << NL;
 	PRINT NL;
@@ -206,8 +204,8 @@ static void damageType(Damage &attack, const std::string &input);
 static void damageCd(Damage &attack, const std::string &input);
 static void damageRemove(Kit &kit, const std::string &input);
 static void damagePop(Damage &attack);
-static void damageCalculate(Damage &attack, const Kit &victim);
-static void damageDPS(Damage &attack, const Kit &victim);
+static void damageCalculate(Damage &attack, const Kit &attacker, const Kit &victim);
+static void damageDPS(Damage &attack, const Kit &attacker, const Kit &victim);
 static void damagePrint(const Kit &kit);
 
 void KitHelper::_damage(const t_command &input)
@@ -257,9 +255,9 @@ void KitHelper::_damage(const t_command &input)
 	else if (input[2] == "pop")
 		damagePop(damage);
 	else if (input[2] == "calculate")
-		damageCalculate(damage, _victim);
+		damageCalculate(damage, _attacker, _victim);
 	else if (input[2] == "dps")
-		damageDPS(damage, _victim);
+		damageDPS(damage, _attacker, _victim);
 	else
 		_invalidParams(input);
 }
@@ -305,7 +303,7 @@ static void damageCreate(Kit &kit, const t_command &input) {
 		return ;
 	}
 
-	Damage newDamage(name, kit, type, cd, base);
+	Damage newDamage(name, type, cd, base);
 	newDamage.addRatio(stat, ratio);
 	PRINT "Created " << newDamage << NL;
 	kit += newDamage;
@@ -404,15 +402,15 @@ static void damagePop(Damage &attack) {
 	--attack;
 }
 
-static void damageCalculate(Damage &attack, const Kit &victim) {
+static void damageCalculate(Damage &attack, const Kit &attacker, const Kit &victim) {
 	PRINT NL;
-	attack.calculateDamage(victim, true);
+	attack.calculateDamage(attacker, victim, true);
 	PRINT NL;
 }
 
-static void damageDPS(Damage &attack, const Kit &victim) {
+static void damageDPS(Damage &attack, const Kit &attacker, const Kit &victim) {
 	PRINT NL;
-	PRINT attack.getName() << "'s DPS: " << attack.calculateDPS(victim) << NL;
+	PRINT attack.getName() << "'s DPS: " << attack.calculateDPS(attacker, victim) << NL;
 	PRINT NL;
 }
 

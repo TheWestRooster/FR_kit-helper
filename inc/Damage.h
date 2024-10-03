@@ -23,7 +23,7 @@ public:
 
 	// Orthodox Canonical Form
 	Damage();
-	Damage(const std::string &name, Kit &kit, t_type type, float cooldown, float base);
+	Damage(const std::string &name, t_type type, float cooldown, float base);
 	Damage(const Damage &src);
 	Damage &operator=(const Damage &rhs);
 	~Damage();
@@ -33,8 +33,6 @@ public:
 	void setName(const std::string &name);
 	t_type getType() const;
 	void setType(t_type type);
-	const Kit *getLinkedKit() const;
-	void setLinkedKit(Kit &linkedKit);
 	const float &getCooldown() const;
 	void setCooldown(const float &cooldown);
 	const float &getBase() const;
@@ -45,12 +43,12 @@ public:
 	// Methods
 	void addRatio(t_stats stat, float ratio);
 	void popRatio();
-	float calculateDamage(const Kit &victim, bool details=false);
-	float calculateReduction(const Kit &victim);
-	float calculateDPS(const Kit &victim);
+	float calculateDamage(const Kit &attacker, const Kit &victim, bool details=false);
+	float calculateReduction(const Kit &attacker, const Kit &victim);
+	float calculateDPS(const Kit &attacker, const Kit &victim);
 
 	// Overloads
-	friend std::ostream &operator<<(std::ostream &os, Damage &damage);
+	friend std::ostream &operator<<(std::ostream &os, const Damage &damage);
 	bool operator==(const Damage &rhs) const;
 	bool operator!=(const Damage &rhs) const;
 	Damage &operator+=(const Damage &rhs);
@@ -64,7 +62,6 @@ public:
 
 private:
 	const std::string _name;
-	Kit *_linkedKit;
 	t_type _type;
 	float _cooldown;
 	float _base;
