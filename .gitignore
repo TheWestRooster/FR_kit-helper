@@ -1,0 +1,5 @@
+obj/
+*.o
+.idea/
+user/
+FR_kit-helper

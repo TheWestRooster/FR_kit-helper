@@ -18,20 +18,16 @@ Kit::Kit(const std::string &name, const Stats &stats) : _name(name), _stats(stat
 	_shield = 0;
 }
 
-Kit::Kit(const Kit &src) : _name(src._name), _stats(src._stats) {
-	this->_attacks = src._attacks;
-	_currPV = getStats().getValue(PVS);
-	_isDead = src._isDead;
-	_shield = src._shield;
-	for (Damage it : src._attacks)
-		*this += it;
+Kit::Kit(const Kit &src) {
+	*this = src;
 }
 
 Kit &Kit::operator=(const Kit &rhs) {
 	const_cast<std::string &>(this->_name) = rhs._name;
 	const_cast<Stats &>(this->_stats) = rhs._stats;
-	for (Damage it : rhs._attacks)
-		*this += it;
+	_attacks = rhs._attacks;
+	for (Damage it : _attacks)
+		it.setLinkedKit(*this);
 	_currPV = getStats().getValue(PVS);
 	_isDead = rhs._isDead;
 	_shield = rhs._shield;
@@ -165,13 +161,15 @@ void Kit::changePV(float amount)
 void Kit::addAttack(Damage attack) {
 	if (attack == Damage::damageNull)
 		return ;
-	if (attack.getLinkedKit() != *this)
+	if (attack.getLinkedKit() == 0)
+		attack.setLinkedKit(*this);
+	if (*attack.getLinkedKit() != *this)
 		attack.setLinkedKit(*this);
 	_attacks.push_back(attack);
 }
 
 void Kit::removeAttack(const std::string &attack) {
-	for (auto it = _attacks.begin(); it < _attacks.end(); it++)
+	for (auto it = _attacks.begin(); it < _attacks.end(); ++it)
 	{
 		if (it.base()->getName() != attack)
 			continue ;
@@ -181,10 +179,10 @@ void Kit::removeAttack(const std::string &attack) {
 }
 
 Damage &Kit::findAttack(const std::string &name) {
-	for (auto it = _attacks.begin(); it < _attacks.end(); it++)
+	for (size_t i = 0; i < _attacks.size(); ++i)
 	{
-		if (it.base()->getName() == name)
-			return *it.base();
+		if (_attacks[i].getName() == name)
+			return _attacks[i];
 	}
 	return const_cast<Damage &>(Damage::damageNull);
 }

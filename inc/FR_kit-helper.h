@@ -8,8 +8,8 @@
 #include "InputHandler.h"
 #include "Kit.h"
 
-#define NL std::endl
 #define PRINT std::cout <<
+#define NL std::endl
 
 class KitHelper
 {

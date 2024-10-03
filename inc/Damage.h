@@ -23,7 +23,7 @@ public:
 
 	// Orthodox Canonical Form
 	Damage();
-	Damage(const std::string name, const Kit &kit, const t_type type, float cooldown, float base);
+	Damage(const std::string &name, Kit &kit, t_type type, float cooldown, float base);
 	Damage(const Damage &src);
 	Damage &operator=(const Damage &rhs);
 	~Damage();
@@ -34,7 +34,7 @@ public:
 	t_type getType() const;
 	void setType(t_type type);
 	const Kit *getLinkedKit() const;
-	void setLinkedKit(const Kit &linkedKit);
+	void setLinkedKit(Kit &linkedKit);
 	const float &getCooldown() const;
 	void setCooldown(const float &cooldown);
 	const float &getBase() const;
@@ -64,9 +64,9 @@ public:
 
 private:
 	const std::string _name;
-	const t_type _type;
-	const float _cooldown;
 	Kit *_linkedKit;
+	t_type _type;
+	float _cooldown;
 	float _base;
 	std::vector<t_stats> _stats;
 	std::vector<float> _ratios;

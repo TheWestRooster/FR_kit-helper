@@ -26,7 +26,7 @@ void KitHelper::run() {
 			break;
 		if (input.empty())
 			continue ;
-		else if (input[0] == "help")
+		if (input[0] == "help")
 			_help();
 		else if (input[0] == "load")
 			_load(input);
