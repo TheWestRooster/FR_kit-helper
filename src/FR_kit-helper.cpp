@@ -212,6 +212,7 @@ void KitHelper::_damage(const t_command &input)
 {
 	const size_t size = input.size();
 	Kit *kit;
+	Kit *victim;
 
 	if (size < 2)
 		return damageHelp();
@@ -222,6 +223,7 @@ void KitHelper::_damage(const t_command &input)
 		kit = &_victim;
 	else
 		return (_invalidParams(input));
+	victim = (Kit *)(((size_t)&_attacker + (size_t)&_victim) - (size_t)(kit));
 	// Print
 	if (input[2] == "print")
 		return damagePrint(*kit);
@@ -255,9 +257,9 @@ void KitHelper::_damage(const t_command &input)
 	else if (input[2] == "pop")
 		damagePop(damage);
 	else if (input[2] == "calculate")
-		damageCalculate(damage, _attacker, _victim);
+		damageCalculate(damage, *kit, *victim);
 	else if (input[2] == "dps")
-		damageDPS(damage, _attacker, _victim);
+		damageDPS(damage, *kit, *victim);
 	else
 		_invalidParams(input);
 }
