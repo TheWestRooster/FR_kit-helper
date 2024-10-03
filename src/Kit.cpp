@@ -23,12 +23,15 @@ Kit::Kit(const Kit &src) : _name(src._name), _stats(src._stats) {
 	_currPV = getStats().getValue(PVS);
 	_isDead = src._isDead;
 	_shield = src._shield;
+	for (Damage it : src._attacks)
+		*this += it;
 }
 
 Kit &Kit::operator=(const Kit &rhs) {
 	const_cast<std::string &>(this->_name) = rhs._name;
 	const_cast<Stats &>(this->_stats) = rhs._stats;
-	this->_attacks = rhs._attacks;
+	for (Damage it : rhs._attacks)
+		*this += it;
 	_currPV = getStats().getValue(PVS);
 	_isDead = rhs._isDead;
 	_shield = rhs._shield;

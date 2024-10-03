@@ -47,12 +47,14 @@ void Damage::setType(t_type type) {
 	const_cast<t_type &>(_type) = type;
 }
 
-const Kit &Damage::getLinkedKit() const {
+const Kit *Damage::getLinkedKit() const {
 	return _linkedKit;
 }
 
 void Damage::setLinkedKit(const Kit &linkedKit) {
-	const_cast<Kit &>(_linkedKit) = linkedKit;
+	if (*_linkedKit == linkedKit)
+		return ;
+	_linkedKit = &linkedKit;
 }
 
 const float &Damage::getCooldown() const

@@ -33,7 +33,7 @@ public:
 	void setName(const std::string &name);
 	t_type getType() const;
 	void setType(t_type type);
-	const Kit &getLinkedKit() const;
+	const Kit *getLinkedKit() const;
 	void setLinkedKit(const Kit &linkedKit);
 	const float &getCooldown() const;
 	void setCooldown(const float &cooldown);
@@ -64,9 +64,9 @@ public:
 
 private:
 	const std::string _name;
-	const Kit &_linkedKit;
 	const t_type _type;
 	const float _cooldown;
+	Kit *_linkedKit;
 	float _base;
 	std::vector<t_stats> _stats;
 	std::vector<float> _ratios;
