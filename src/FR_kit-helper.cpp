@@ -42,6 +42,8 @@ void KitHelper::run() {
 			_utils();
 		else if (input[0] == "damage")
 			_damage(input);
+		else if (input[0] == "clear")
+			PRINT "\x1B[2J\x1B[H";
 		else
 			_unknownCommand();
 	}
@@ -174,7 +176,10 @@ void KitHelper::_change(const t_command &input)
 		*changed += changedStats;
 	} else {
 		previousStat = changed->getCurrPV();
-		changed->setCurrPV(newAmount);
+		if (!addMode)
+			*changed = newAmount;
+		else
+			*changed += newAmount;
 	}
 	PRINT YLW "Changed " CLR << Stats::statToStr(stat) << YLW " of " CLR << changed->getName();
 	PRINT YLW " from " BLK << previousStat << YLW " to " CLR << changed->extractStat(stat);
