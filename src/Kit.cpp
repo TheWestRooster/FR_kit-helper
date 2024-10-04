@@ -59,7 +59,7 @@ const float &Kit::getCurrPV() const
 
 void Kit::setCurrPV(const float &currPV)
 {
-	_currPV = currPV;
+	_currPV = std::min(currPV, extractStat(PVS));
 	changePV(0);
 }
 

@@ -195,8 +195,6 @@ const std::string Stats::statToStr(t_stats stat)
 t_stats Stats::strToStat(const std::string &str)
 {
 	if (str == "PVS") return PVS;
-	if (str == "MISSING_PVS") return MISSING_PVS;
-	if (str == "CURRENT_PVS") return CURRENT_PVS;
 	if (str == "RGN") return RGN;
 	if (str == "ATK") return ATK;
 	if (str == "PWR") return PWR;
@@ -213,9 +211,9 @@ t_stats Stats::strToStat(const std::string &str)
 	if (str == "CDR") return CDR;
 	if (str == "CRIT_CHANCE") return CRIT_CHANCE;
 	if (str == "CRIT_DAMAGE") return CRIT_DAMAGE;
+	if (str == "CURRENT_PVS") return CURRENT_PVS;
+	if (str == "MISSING_PVS") return MISSING_PVS;
 	if (str == "VICTIM_PVS") return VICTIM_PVS;
-	if (str == "VICTIM_MISSING_PVS") return VICTIM_MISSING_PVS;
-	if (str == "VICTIM_CURRENT_PVS") return VICTIM_CURRENT_PVS;
 	if (str == "VICTIM_RGN") return VICTIM_RGN;
 	if (str == "VICTIM_ATK") return VICTIM_ATK;
 	if (str == "VICTIM_PWR") return VICTIM_PWR;
@@ -232,5 +230,7 @@ t_stats Stats::strToStat(const std::string &str)
 	if (str == "VICTIM_CDR") return VICTIM_CDR;
 	if (str == "VICTIM_CRIT_CHANCE") return VICTIM_CRIT_CHANCE;
 	if (str == "VICTIM_CRIT_DAMAGE") return VICTIM_CRIT_DAMAGE;
+	if (str == "VICTIM_CURRENT_PVS") return VICTIM_CURRENT_PVS;
+	if (str == "VICTIM_MISSING_PVS") return VICTIM_MISSING_PVS;
 	return ESTATS_END;
 }

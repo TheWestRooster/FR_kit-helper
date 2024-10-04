@@ -148,7 +148,7 @@ void KitHelper::_change(const t_command &input)
 	stat = Stats::strToStat(input[2]);
 	if (stat == ESTATS_END || stat >= MISSING_PVS)
 		return _invalidParams(input);
-	
+
 	if (input[3][0] == '+' || input[3][0] == '-')
 		addMode = 1;
 
@@ -164,12 +164,18 @@ void KitHelper::_change(const t_command &input)
 		changed = &_victim;
 	else
 		return _invalidParams(input);
-	previousStat = changed->extractStat(stat);
-	if (!addMode)
-		changedStats.setValue(stat, newAmount - previousStat);
-	else
-		changedStats.setValue(stat, newAmount);
-	*changed += changedStats;
+	if (stat != CURRENT_PVS)
+	{
+		previousStat = changed->extractStat(stat);
+		if (!addMode)
+			changedStats.setValue(stat, newAmount - previousStat);
+		else
+			changedStats.setValue(stat, newAmount);
+		*changed += changedStats;
+	} else {
+		previousStat = changed->getCurrPV();
+		changed->setCurrPV(newAmount);
+	}
 	PRINT YLW "Changed " CLR << Stats::statToStr(stat) << YLW " of " CLR << changed->getName();
 	PRINT YLW " from " BLK << previousStat << YLW " to " CLR << changed->extractStat(stat);
 	PRINT NL;
