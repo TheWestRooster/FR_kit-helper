@@ -10,8 +10,8 @@ Stats::Stats() {
 	this->_stats[RGN] = 5;
 	this->_stats[ATK] = 200;
 	this->_stats[PWR] = 0;
-	this->_stats[DEF] = 100;
-	this->_stats[RES] = 100;
+	this->_stats[DEF] = 150;
+	this->_stats[RES] = 150;
 	this->_stats[SPD] = 100;
 	this->_stats[LET] = 0;
 	this->_stats[IGD] = 0;
